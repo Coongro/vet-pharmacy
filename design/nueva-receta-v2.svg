@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 1080" font-family="Roboto, sans-serif">
+  <defs>
+    <style>
+      .bg { fill: #F6F5F1; }
+      .card { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 12; }
+      .text-title { fill: #2C2925; font-size: 16px; font-weight: 600; font-family: 'Noto Serif JP', serif; }
+      .text-section { fill: #9B9893; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+      .text-label { fill: #6B6660; font-size: 11px; }
+      .text-muted { fill: #9B9893; font-size: 11px; }
+      .text-placeholder { fill: #C4C0BA; font-size: 12px; }
+      .text-value { fill: #2C2925; font-size: 13px; }
+      .text-value-sm { fill: #2C2925; font-size: 12px; }
+      .input-bg { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .select-bg { fill: #FFFDF7; stroke: #F5A800; stroke-width: 1.5; rx: 6; }
+      .readonly-bg { fill: #F6F5F1; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .btn-primary { fill: #F5A800; rx: 6; }
+      .btn-primary-text { fill: #FFFFFF; font-size: 13px; font-weight: 500; }
+      .btn-outline { fill: none; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .btn-outline-text { fill: #6B6660; font-size: 13px; }
+      .badge-auto { fill: #E8F5E9; rx: 4; }
+      .badge-auto-text { fill: #3D9A5C; font-size: 9px; font-weight: 600; }
+      .badge-improved { fill: #FFF3CC; rx: 4; }
+      .badge-improved-text { fill: #8A6800; font-size: 9px; font-weight: 600; }
+      .badge-new { fill: #E3F2FD; rx: 4; }
+      .badge-new-text { fill: #1565C0; font-size: 9px; font-weight: 600; }
+      .separator { stroke: #E5E2DC; stroke-width: 1; }
+      .annotation { fill: #C8423A; font-size: 10px; font-style: italic; }
+      .lock-icon { fill: #9B9893; font-size: 11px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="540" height="1080" class="bg" rx="12"/>
+  <rect x="10" y="10" width="520" height="1060" class="card"/>
+
+  <!-- ═══ Header ═══ -->
+  <text x="30" y="42" class="text-title">Nueva receta</text>
+  <text x="510" y="42" text-anchor="end" class="text-muted">v2</text>
+  <line x1="10" y1="58" x2="530" y2="58" class="separator"/>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Paciente — Mascota obligatoria, todo auto-fill               -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="82" class="text-section">PACIENTE</text>
+  <line x1="105" y1="78" x2="510" y2="78" class="separator"/>
+
+  <!-- Mascota autocomplete (obligatorio) -->
+  <text x="30" y="102" class="text-label">Mascota *</text>
+  <rect x="30" y="108" width="490" height="32" class="input-bg"/>
+  <circle cx="48" cy="124" r="8" fill="none" stroke="#9B9893" stroke-width="1.5"/>
+  <line x1="54" y1="129" x2="58" y2="133" fill="none" stroke="#9B9893" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="64" y="128" class="text-placeholder">Buscar mascota... (obligatorio)</text>
+
+  <!-- Badge: vinculación obligatoria -->
+  <rect x="30" y="144" width="82" height="14" class="badge-new"/>
+  <text x="34" y="154" class="badge-new-text">OBLIGATORIO</text>
+  <text x="118" y="154" class="annotation">La mascota debe existir en el sistema</text>
+
+  <!-- ─── Datos auto-rellenados (read-only, fondo gris) ─── -->
+  <!-- Fila 1: Especie | Raza | Sexo -->
+  <text x="30" y="178" class="text-label">Especie</text>
+  <rect x="30" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="42" y="202" class="text-value-sm">Canino</text>
+  <text x="170" y="202" class="lock-icon">🔒</text>
+  <rect x="93" y="173" width="32" height="14" class="badge-auto"/>
+  <text x="109" y="183" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <text x="195" y="178" class="text-label">Raza</text>
+  <rect x="195" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="207" y="202" class="text-value-sm">Labrador Retriever</text>
+  <rect x="225" y="173" width="32" height="14" class="badge-auto"/>
+  <text x="241" y="183" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <text x="365" y="178" class="text-label">Sexo</text>
+  <rect x="365" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="377" y="202" class="text-value-sm">Macho</text>
+  <rect x="395" y="173" width="32" height="14" class="badge-auto"/>
+  <text x="411" y="183" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <!-- Fila 2: Edad | Peso | Microchip -->
+  <text x="30" y="228" class="text-label">Edad</text>
+  <rect x="30" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="42" y="252" class="text-value-sm">3a 2m</text>
+  <rect x="62" y="223" width="32" height="14" class="badge-auto"/>
+  <text x="78" y="233" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <text x="195" y="228" class="text-label">Peso (kg)</text>
+  <rect x="195" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="207" y="252" class="text-value-sm">28.5 kg</text>
+  <rect x="256" y="223" width="32" height="14" class="badge-auto"/>
+  <text x="272" y="233" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <text x="365" y="228" class="text-label">Microchip</text>
+  <rect x="365" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="377" y="252" class="text-value-sm">941000024680135</text>
+  <rect x="430" y="223" width="32" height="14" class="badge-auto"/>
+  <text x="446" y="233" class="badge-auto-text" text-anchor="middle">AUTO</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Propietario — 100% auto-fill desde mascota                   -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="290" class="text-section">PROPIETARIO</text>
+  <rect x="135" y="280" width="62" height="14" class="badge-auto"/>
+  <text x="166" y="290" class="badge-auto-text" text-anchor="middle">AUTO-FILL</text>
+  <line x1="205" y1="286" x2="510" y2="286" class="separator"/>
+
+  <!-- Fila 1: Nombre | Teléfono -->
+  <text x="30" y="310" class="text-label">Nombre</text>
+  <rect x="30" y="316" width="240" height="28" class="readonly-bg"/>
+  <text x="42" y="334" class="text-value-sm">Juan Pérez</text>
+  <text x="255" y="334" class="lock-icon">🔒</text>
+
+  <text x="280" y="310" class="text-label">Teléfono</text>
+  <rect x="280" y="316" width="240" height="28" class="readonly-bg"/>
+  <text x="292" y="334" class="text-value-sm">+54 11 5555-1234</text>
+
+  <!-- Fila 2: Documento | Domicilio -->
+  <text x="30" y="360" class="text-label">Documento</text>
+  <rect x="30" y="366" width="240" height="28" class="readonly-bg"/>
+  <text x="42" y="384" class="text-value-sm">DNI 30.456.789</text>
+
+  <text x="280" y="360" class="text-label">Domicilio</text>
+  <rect x="280" y="366" width="240" height="28" class="readonly-bg"/>
+  <text x="292" y="384" class="text-value-sm">Av. Corrientes 1234, CABA</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Veterinario — Autocomplete desde contacts + default          -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="422" class="text-section">VETERINARIO</text>
+  <line x1="130" y1="418" x2="510" y2="418" class="separator"/>
+
+  <!-- Veterinario autocomplete -->
+  <text x="30" y="442" class="text-label">Veterinario *</text>
+  <rect x="30" y="448" width="320" height="32" class="select-bg"/>
+  <circle cx="48" cy="464" r="8" fill="none" stroke="#F5A800" stroke-width="1.5"/>
+  <line x1="54" y1="469" x2="58" y2="473" stroke="#F5A800" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="64" y="468" class="text-placeholder">Buscar veterinario...</text>
+  <rect x="30" y="482" width="80" height="14" class="badge-improved"/>
+  <text x="34" y="492" class="badge-improved-text">MEJORAR</text>
+  <text x="115" y="492" class="annotation">Autocomplete contacts + default vet setting</text>
+
+  <!-- Matrícula auto-fill -->
+  <text x="360" y="442" class="text-label">Matrícula</text>
+  <rect x="360" y="448" width="160" height="32" class="readonly-bg"/>
+  <text x="372" y="468" class="text-muted">Se auto-rellena</text>
+  <rect x="360" y="482" width="62" height="14" class="badge-auto"/>
+  <text x="391" y="492" class="badge-auto-text" text-anchor="middle">AUTO-FILL</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Diagnóstico                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="528" class="text-section">DIAGNOSTICO</text>
+  <line x1="125" y1="524" x2="510" y2="524" class="separator"/>
+
+  <!-- Consulta vinculada -->
+  <text x="30" y="548" class="text-label">Vincular a consulta (opcional)</text>
+  <rect x="30" y="554" width="490" height="32" class="input-bg"/>
+  <text x="42" y="574" class="text-muted">Seleccionar consulta reciente...</text>
+  <text x="500" y="574" class="text-muted" text-anchor="end">▾</text>
+
+  <!-- Diagnóstico combobox -->
+  <text x="30" y="604" class="text-label">Diagnóstico</text>
+  <rect x="30" y="610" width="490" height="32" class="select-bg"/>
+  <text x="42" y="630" class="text-placeholder">Escribir o seleccionar diagnóstico previo...</text>
+  <text x="500" y="630" class="text-muted" text-anchor="end">▾</text>
+  <rect x="30" y="644" width="80" height="14" class="badge-improved"/>
+  <text x="34" y="654" class="badge-improved-text">MEJORAR</text>
+  <text x="115" y="654" class="annotation">Combobox: diagnosis_tags + historial del paciente</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Medicamentos                                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="688" class="text-section">MEDICAMENTOS</text>
+  <rect x="145" y="678" width="16" height="14" class="badge-auto"/>
+  <text x="153" y="688" class="badge-auto-text" text-anchor="middle">1</text>
+  <line x1="170" y1="684" x2="510" y2="684" class="separator"/>
+
+  <!-- Card medicamento -->
+  <rect x="30" y="700" width="490" height="166" rx="8" stroke="#E5E2DC" stroke-width="1" fill="#FAFAF8"/>
+
+  <!-- Medicamento autocomplete -->
+  <text x="42" y="720" class="text-label">Medicamento 1</text>
+  <rect x="42" y="726" width="430" height="30" class="input-bg"/>
+  <text x="54" y="745" class="text-placeholder">Buscar principio activo o producto...</text>
+  <rect x="480" y="726" width="28" height="30" fill="none" stroke="#E5E2DC" stroke-width="1" rx="4"/>
+  <text x="494" y="745" fill="#C8423A" font-size="13" text-anchor="middle">x</text>
+
+  <!-- Auto-fill desde medicamento seleccionado -->
+  <text x="42" y="775" class="text-label">Dosis</text>
+  <rect x="42" y="781" width="80" height="26" class="input-bg"/>
+  <text x="50" y="798" class="text-placeholder" font-size="10">5mg/kg</text>
+
+  <!-- Vía — auto-fill desde medication.administration_route -->
+  <text x="130" y="775" class="text-label">Vía</text>
+  <rect x="130" y="781" width="80" height="26" class="readonly-bg"/>
+  <text x="138" y="798" class="text-value-sm" font-size="10">Oral</text>
+  <rect x="130" y="810" width="62" height="13" class="badge-auto"/>
+  <text x="161" y="820" class="badge-auto-text" text-anchor="middle">AUTO-FILL</text>
+  <text x="197" y="820" class="annotation" font-size="9">medication.route</text>
+
+  <!-- Frecuencia — Combobox con presets -->
+  <text x="218" y="775" class="text-label">Frecuencia</text>
+  <rect x="218" y="781" width="90" height="26" class="select-bg"/>
+  <text x="226" y="798" class="text-placeholder" font-size="10">c/8h</text>
+  <text x="296" y="798" fill="#F5A800" font-size="10">▾</text>
+  <rect x="218" y="810" width="80" height="13" class="badge-improved"/>
+  <text x="222" y="820" class="badge-improved-text" font-size="8">MEJORAR</text>
+  <text x="302" y="820" class="annotation" font-size="9">Combobox presets</text>
+
+  <!-- Duración — Combobox con presets -->
+  <text x="316" y="775" class="text-label">Duración</text>
+  <rect x="316" y="781" width="90" height="26" class="select-bg"/>
+  <text x="324" y="798" class="text-placeholder" font-size="10">7 días</text>
+  <text x="394" y="798" fill="#F5A800" font-size="10">▾</text>
+  <rect x="316" y="810" width="80" height="13" class="badge-improved"/>
+  <text x="320" y="820" class="badge-improved-text" font-size="8">MEJORAR</text>
+  <text x="400" y="820" class="annotation" font-size="9">Combobox presets</text>
+
+  <!-- Cantidad -->
+  <text x="414" y="775" class="text-label">Cantidad</text>
+  <rect x="414" y="781" width="60" height="26" class="input-bg"/>
+  <text x="422" y="798" class="text-placeholder" font-size="10">1</text>
+
+  <!-- Auto-fill note -->
+  <rect x="42" y="840" width="466" height="18" rx="4" fill="#E8F5E9" fill-opacity="0.5" stroke="#3D9A5C" stroke-width="0.5"/>
+  <text x="50" y="853" fill="#3D9A5C" font-size="9">Al seleccionar medicamento: vía se auto-rellena desde el catálogo. Dosis puede sugerirse si hay historial.</text>
+
+  <!-- Botón agregar medicamento -->
+  <rect x="30" y="878" width="490" height="32" rx="6" fill="none" stroke="#E5E2DC" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="270" y="898" text-anchor="middle" class="text-muted">+ Agregar medicamento</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Observaciones                                                -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="936" class="text-section">OBSERVACIONES</text>
+  <line x1="140" y1="932" x2="510" y2="932" class="separator"/>
+
+  <rect x="30" y="944" width="490" height="48" class="input-bg"/>
+  <text x="42" y="964" class="text-placeholder">Indicaciones adicionales, advertencias...</text>
+
+  <!-- ═══ Footer ═══ -->
+  <line x1="10" y1="1006" x2="530" y2="1006" class="separator"/>
+  <rect x="30" y="1018" width="130" height="34" class="btn-primary" rx="6"/>
+  <text x="95" y="1039" text-anchor="middle" class="btn-primary-text">Guardar receta</text>
+  <rect x="170" y="1018" width="90" height="34" class="btn-outline" rx="6"/>
+  <text x="215" y="1039" text-anchor="middle" class="btn-outline-text">Cancelar</text>
+
+  <!-- ═══ Leyenda v2 ═══ -->
+  <rect x="280" y="1010" width="240" height="50" rx="6" fill="#FAFAF8" stroke="#E5E2DC" stroke-width="0.5"/>
+  <rect x="290" y="1018" width="10" height="10" class="readonly-bg" rx="2"/>
+  <text x="305" y="1027" font-size="9" fill="#6B6660">Auto-rellenado (read-only) — 10 campos</text>
+  <rect x="290" y="1032" width="10" height="10" fill="#FFFDF7" stroke="#F5A800" stroke-width="1" rx="2"/>
+  <text x="305" y="1041" font-size="9" fill="#8A6800">A mejorar (combobox/autocomplete) — 4 campos</text>
+  <rect x="290" y="1046" width="10" height="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1" rx="2"/>
+  <text x="305" y="1055" font-size="9" fill="#1565C0">Nuevo comportamiento — mascota obligatoria</text>
+</svg>

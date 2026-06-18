@@ -1,0 +1,340 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 1420" font-family="Roboto, sans-serif">
+  <defs>
+    <style>
+      .bg { fill: #F6F5F1; }
+      .card { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 12; }
+      .text-title { fill: #2C2925; font-size: 16px; font-weight: 600; font-family: 'Noto Serif JP', serif; }
+      .text-section { fill: #9B9893; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+      .text-label { fill: #6B6660; font-size: 11px; }
+      .text-muted { fill: #9B9893; font-size: 11px; }
+      .text-placeholder { fill: #C4C0BA; font-size: 12px; }
+      .text-value { fill: #2C2925; font-size: 13px; }
+      .text-value-sm { fill: #2C2925; font-size: 12px; }
+      .input-bg { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .select-bg { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .readonly-bg { fill: #F6F5F1; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .prefilled-bg { fill: #FAFFF7; stroke: #B8D4A0; stroke-width: 1; rx: 6; }
+      .calc-bg { fill: #F0FAF4; stroke: #3D9A5C; stroke-width: 1; rx: 6; }
+      .template-bg { fill: #F5F0FF; stroke: #B0A0D0; stroke-width: 1; rx: 6; stroke-dasharray: 4 2; }
+      .btn-primary { fill: #F5A800; rx: 6; }
+      .btn-primary-text { fill: #FFFFFF; font-size: 13px; font-weight: 500; }
+      .btn-outline { fill: none; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .btn-outline-text { fill: #6B6660; font-size: 13px; }
+      .badge-auto { fill: #E8F5E9; rx: 4; }
+      .badge-auto-text { fill: #3D9A5C; font-size: 8px; font-weight: 600; }
+      .badge-prefill { fill: #F0FAF4; rx: 4; }
+      .badge-prefill-text { fill: #5A8C3C; font-size: 8px; font-weight: 600; }
+      .badge-calc { fill: #E8F5E9; rx: 4; }
+      .badge-calc-text { fill: #3D9A5C; font-size: 8px; font-weight: 600; }
+      .badge-new { fill: #E3F2FD; rx: 4; }
+      .badge-new-text { fill: #1565C0; font-size: 8px; font-weight: 600; }
+      .badge-template { fill: #EDE7F6; rx: 4; }
+      .badge-template-text { fill: #7E57C2; font-size: 8px; font-weight: 600; }
+      .badge-migrate { fill: #FFF3E0; rx: 4; }
+      .badge-migrate-text { fill: #E65100; font-size: 8px; font-weight: 600; }
+      .separator { stroke: #E5E2DC; stroke-width: 1; }
+      .annotation { fill: #6B6660; font-size: 9px; font-style: italic; }
+      .med-card { fill: #FAFAF8; stroke: #E5E2DC; stroke-width: 1; rx: 8; }
+    </style>
+  </defs>
+
+  <rect width="580" height="1420" class="bg" rx="12"/>
+  <rect x="10" y="10" width="560" height="1400" class="card"/>
+
+  <!-- ═══ Header ═══ -->
+  <text x="30" y="42" class="text-title">Nueva receta</text>
+  <text x="550" y="42" text-anchor="end" class="text-muted">v5 — modelo final</text>
+  <line x1="10" y1="58" x2="570" y2="58" class="separator"/>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- PACIENTE — mascota obligatoria, todo auto-fill                        -->
+  <!-- Ya existe: patients.pets.search, pet.owner_id → contacts              -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="82" class="text-section">PACIENTE</text>
+  <rect x="100" y="72" width="40" height="14" class="badge-auto"/>
+  <text x="120" y="82" class="badge-auto-text" text-anchor="middle">EXISTE</text>
+  <line x1="148" y1="78" x2="550" y2="78" class="separator"/>
+
+  <!-- Mascota autocomplete -->
+  <text x="30" y="102" class="text-label">Mascota *</text>
+  <rect x="30" y="108" width="530" height="32" class="input-bg"/>
+  <circle cx="48" cy="124" r="8" fill="none" stroke="#9B9893" stroke-width="1.5"/>
+  <line x1="54" y1="129" x2="58" y2="133" fill="none" stroke="#9B9893" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="64" y="128" class="text-placeholder">Buscar mascota...</text>
+
+  <!-- Datos auto-fill fila 1 -->
+  <text x="30" y="160" class="text-label">Especie</text>
+  <rect x="30" y="166" width="165" height="28" class="readonly-bg"/>
+  <text x="42" y="184" class="text-value-sm">Canino</text>
+
+  <text x="205" y="160" class="text-label">Raza</text>
+  <rect x="205" y="166" width="175" height="28" class="readonly-bg"/>
+  <text x="217" y="184" class="text-value-sm">Labrador Retriever</text>
+
+  <text x="390" y="160" class="text-label">Sexo</text>
+  <rect x="390" y="166" width="170" height="28" class="readonly-bg"/>
+  <text x="402" y="184" class="text-value-sm">Macho</text>
+
+  <!-- Datos auto-fill fila 2 -->
+  <text x="30" y="210" class="text-label">Edad</text>
+  <rect x="30" y="216" width="165" height="28" class="readonly-bg"/>
+  <text x="42" y="234" class="text-value-sm">3a 2m</text>
+
+  <text x="205" y="210" class="text-label">Peso (kg)</text>
+  <rect x="205" y="216" width="175" height="28" class="readonly-bg"/>
+  <text x="217" y="234" class="text-value-sm">28.5 kg</text>
+
+  <text x="390" y="210" class="text-label">Microchip</text>
+  <rect x="390" y="216" width="170" height="28" class="readonly-bg"/>
+  <text x="402" y="234" class="text-value-sm">941000024680135</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- PROPIETARIO — auto-fill desde mascota → contacto                      -->
+  <!-- Ya existe: contacts.getById desde pet.owner_id                        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="272" class="text-section">PROPIETARIO</text>
+  <rect x="135" y="262" width="40" height="14" class="badge-auto"/>
+  <text x="155" y="272" class="badge-auto-text" text-anchor="middle">EXISTE</text>
+  <line x1="183" y1="268" x2="550" y2="268" class="separator"/>
+
+  <text x="30" y="292" class="text-label">Nombre</text>
+  <rect x="30" y="298" width="260" height="28" class="readonly-bg"/>
+  <text x="42" y="316" class="text-value-sm">Juan Perez</text>
+
+  <text x="300" y="292" class="text-label">Telefono</text>
+  <rect x="300" y="298" width="260" height="28" class="readonly-bg"/>
+  <text x="312" y="316" class="text-value-sm">+54 11 5555-1234</text>
+
+  <text x="30" y="342" class="text-label">Documento</text>
+  <rect x="30" y="348" width="260" height="28" class="readonly-bg"/>
+  <text x="42" y="366" class="text-value-sm">DNI 30.456.789</text>
+
+  <text x="300" y="342" class="text-label">Domicilio</text>
+  <rect x="300" y="348" width="260" height="28" class="readonly-bg"/>
+  <text x="312" y="366" class="text-value-sm">Av. Corrientes 1234, CABA</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- VETERINARIO — template/placeholder                                    -->
+  <!-- No existe: no hay registro de vets ni matricula en contacts           -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="406" class="text-section">VETERINARIO</text>
+  <rect x="135" y="396" width="62" height="14" class="badge-template"/>
+  <text x="166" y="406" class="badge-template-text" text-anchor="middle">TEMPLATE</text>
+  <line x1="205" y1="402" x2="550" y2="402" class="separator"/>
+
+  <text x="30" y="426" class="text-label">Veterinario *</text>
+  <rect x="30" y="432" width="340" height="32" class="template-bg"/>
+  <text x="42" y="452" class="text-placeholder">Buscar veterinario...</text>
+  <text x="30" y="472" class="annotation">Requiere registro de veterinarios (futuro). Hoy: input texto como fallback.</text>
+
+  <text x="380" y="426" class="text-label">Matricula</text>
+  <rect x="380" y="432" width="180" height="32" class="template-bg"/>
+  <text x="392" y="452" class="text-placeholder">Auto-fill (futuro)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- DIAGNOSTICO                                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="510" class="text-section">DIAGNOSTICO</text>
+  <line x1="125" y1="506" x2="550" y2="506" class="separator"/>
+
+  <!-- Consulta vinculada — ya existe -->
+  <text x="30" y="530" class="text-label">Vincular a consulta (opcional)</text>
+  <rect x="30" y="536" width="530" height="32" class="select-bg"/>
+  <text x="42" y="556" class="text-muted">Seleccionar consulta reciente...</text>
+  <text x="540" y="556" class="text-muted" text-anchor="end">&#9662;</text>
+  <rect x="450" y="525" width="40" height="14" class="badge-auto"/>
+  <text x="470" y="535" class="badge-auto-text" text-anchor="middle">EXISTE</text>
+
+  <!-- Diagnostico — query nuevo sobre prescripciones propias -->
+  <text x="30" y="586" class="text-label">Diagnostico</text>
+  <rect x="30" y="592" width="530" height="32" class="select-bg"/>
+  <text x="42" y="612" class="text-placeholder">Escribir o seleccionar diagnostico previo...</text>
+  <text x="540" y="612" class="text-muted" text-anchor="end">&#9662;</text>
+  <rect x="30" y="626" width="50" height="14" class="badge-new"/>
+  <text x="34" y="636" class="badge-new-text">NUEVO</text>
+  <text x="86" y="636" class="annotation">Query: SELECT DISTINCT diagnosis FROM prescriptions WHERE pet_id = ?</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- MEDICAMENTOS — campos estructurados                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="670" class="text-section">MEDICAMENTOS</text>
+  <rect x="150" y="660" width="16" height="14" class="badge-auto"/>
+  <text x="158" y="670" class="badge-auto-text" text-anchor="middle">1</text>
+  <line x1="175" y1="666" x2="550" y2="666" class="separator"/>
+
+  <!-- ─── Card medicamento 1 ─── -->
+  <rect x="30" y="682" width="530" height="408" class="med-card"/>
+
+  <!-- Medicamento autocomplete — ya existe -->
+  <text x="42" y="702" class="text-label">Medicamento 1</text>
+  <rect x="42" y="708" width="472" height="30" class="input-bg"/>
+  <text x="54" y="727" class="text-placeholder">Buscar principio activo o producto...</text>
+  <rect x="522" y="708" width="28" height="30" fill="none" stroke="#E5E2DC" stroke-width="1" rx="4"/>
+  <text x="536" y="727" fill="#C8423A" font-size="13" text-anchor="middle">x</text>
+  <rect x="450" y="698" width="40" height="14" class="badge-auto"/>
+  <text x="470" y="708" class="badge-auto-text" text-anchor="middle">EXISTE</text>
+
+  <!-- Info del medicamento (auto-fill del catalogo) -->
+  <rect x="42" y="746" width="472" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="50" y="761" class="text-muted" font-size="10">Amoxicilina 500mg comprimidos — Lab. Bayer — Oral — Requiere receta</text>
+
+  <!-- ─── DOSIS: amount + unit (estructurado) ─── -->
+  <text x="42" y="788" class="text-label">Dosis *</text>
+
+  <!-- Dosis amount -->
+  <rect x="42" y="794" width="80" height="28" class="prefilled-bg"/>
+  <text x="54" y="812" class="text-value-sm">15</text>
+
+  <!-- Dosis unit (select) -->
+  <rect x="124" y="794" width="90" height="28" class="prefilled-bg"/>
+  <text x="136" y="812" class="text-value-sm">mg/kg</text>
+  <text x="200" y="812" class="text-muted" font-size="10">&#9662;</text>
+
+  <!-- Precarga badge -->
+  <rect x="42" y="824" width="72" height="14" class="badge-prefill"/>
+  <text x="46" y="834" class="badge-prefill-text">PRECARGADO</text>
+  <text x="120" y="834" class="annotation">Historial: "ultima receta de este med para canino"</text>
+
+  <!-- Via — auto-fill desde medication.administration_route (ya existe) -->
+  <text x="228" y="788" class="text-label">Via</text>
+  <rect x="228" y="794" width="110" height="28" class="prefilled-bg"/>
+  <text x="240" y="812" class="text-value-sm">Oral</text>
+  <text x="324" y="812" fill="#B8D4A0" font-size="11">&#9998;</text>
+  <rect x="228" y="824" width="40" height="14" class="badge-auto"/>
+  <text x="248" y="834" class="badge-auto-text" text-anchor="middle">EXISTE</text>
+  <text x="274" y="834" class="annotation">medication.administration_route</text>
+
+  <!-- Presentacion — read-only del catalogo (ya existe) -->
+  <text x="352" y="788" class="text-label">Presentacion</text>
+  <rect x="352" y="794" width="162" height="28" class="readonly-bg"/>
+  <text x="364" y="812" class="text-value-sm">Comprimidos 500mg</text>
+
+  <!-- ─── FRECUENCIA: integer horas (estructurado) ─── -->
+  <text x="42" y="862" class="text-label">Frecuencia *</text>
+
+  <!-- Input "cada" -->
+  <text x="42" y="884" class="text-value-sm">Cada</text>
+
+  <!-- Horas (select con presets) -->
+  <rect x="72" y="872" width="70" height="28" class="select-bg"/>
+  <text x="84" y="890" class="text-value-sm">8</text>
+  <text x="128" y="890" class="text-muted" font-size="10">&#9662;</text>
+
+  <text x="150" y="890" class="text-value-sm">horas</text>
+
+  <!-- Presets visuales -->
+  <rect x="195" y="874" width="30" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="210" y="889" class="text-muted" font-size="10" text-anchor="middle">6h</text>
+  <rect x="228" y="874" width="30" height="22" rx="4" fill="#FAFFF7" stroke="#B8D4A0" stroke-width="1"/>
+  <text x="243" y="889" class="text-value-sm" font-size="10" text-anchor="middle">8h</text>
+  <rect x="261" y="874" width="33" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="278" y="889" class="text-muted" font-size="10" text-anchor="middle">12h</text>
+  <rect x="297" y="874" width="33" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="314" y="889" class="text-muted" font-size="10" text-anchor="middle">24h</text>
+  <rect x="333" y="874" width="33" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="350" y="889" class="text-muted" font-size="10" text-anchor="middle">48h</text>
+
+  <rect x="42" y="900" width="62" height="14" class="badge-migrate"/>
+  <text x="46" y="910" class="badge-migrate-text">MIGRACION</text>
+  <text x="110" y="910" class="annotation">frequency text → frequency_hours integer en prescription_item</text>
+
+  <!-- ─── DURACION: amount + unit (estructurado) ─── -->
+  <text x="42" y="936" class="text-label">Duracion *</text>
+
+  <!-- Amount -->
+  <rect x="42" y="942" width="60" height="28" class="select-bg"/>
+  <text x="54" y="960" class="text-value-sm">7</text>
+  <text x="88" y="960" class="text-muted" font-size="10">&#9662;</text>
+
+  <!-- Unit -->
+  <rect x="106" y="942" width="90" height="28" class="select-bg"/>
+  <text x="118" y="960" class="text-value-sm">dias</text>
+  <text x="182" y="960" class="text-muted" font-size="10">&#9662;</text>
+
+  <!-- Presets -->
+  <rect x="210" y="944" width="24" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="222" y="959" class="text-muted" font-size="10" text-anchor="middle">3</text>
+  <rect x="237" y="944" width="24" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="249" y="959" class="text-muted" font-size="10" text-anchor="middle">5</text>
+  <rect x="264" y="944" width="24" height="22" rx="4" fill="#FAFFF7" stroke="#B8D4A0" stroke-width="1"/>
+  <text x="276" y="959" class="text-value-sm" font-size="10" text-anchor="middle">7</text>
+  <rect x="291" y="944" width="28" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="305" y="959" class="text-muted" font-size="10" text-anchor="middle">10</text>
+  <rect x="322" y="944" width="28" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="336" y="959" class="text-muted" font-size="10" text-anchor="middle">14</text>
+  <rect x="353" y="944" width="28" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="367" y="959" class="text-muted" font-size="10" text-anchor="middle">21</text>
+  <rect x="384" y="944" width="28" height="22" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="398" y="959" class="text-muted" font-size="10" text-anchor="middle">30</text>
+
+  <rect x="42" y="972" width="62" height="14" class="badge-migrate"/>
+  <text x="46" y="982" class="badge-migrate-text">MIGRACION</text>
+  <text x="110" y="982" class="annotation">duration text → duration_amount int + duration_unit text</text>
+
+  <!-- ─── CANTIDAD A DISPENSAR (calculada) ─── -->
+  <text x="42" y="1010" class="text-label">Cantidad a dispensar</text>
+  <rect x="42" y="1016" width="200" height="28" class="calc-bg"/>
+  <text x="54" y="1034" fill="#3D9A5C" font-size="12" font-weight="600">14 comprimidos</text>
+  <text x="252" y="1034" class="annotation">= 1 comp. x (24h / 8h) x 7 dias</text>
+  <rect x="42" y="1046" width="56" height="14" class="badge-calc"/>
+  <text x="46" y="1056" class="badge-calc-text">CALCULADO</text>
+  <text x="104" y="1056" class="annotation">Override manual disponible</text>
+
+  <!-- Indicaciones opcionales -->
+  <text x="42" y="1076" class="text-label">Indicaciones (opcional)</text>
+  <rect x="42" y="1082" width="472" height="24" class="input-bg"/>
+  <text x="54" y="1098" class="text-placeholder" font-size="10">Administrar con comida...</text>
+
+  <!-- ─── Fin card medicamento ─── -->
+
+  <!-- Boton agregar -->
+  <rect x="30" y="1102" width="530" height="32" rx="6" fill="none" stroke="#E5E2DC" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="295" y="1122" text-anchor="middle" class="text-muted">+ Agregar medicamento</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- OBSERVACIONES                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="1162" class="text-section">OBSERVACIONES</text>
+  <line x1="140" y1="1158" x2="550" y2="1158" class="separator"/>
+
+  <rect x="30" y="1170" width="530" height="48" class="input-bg"/>
+  <text x="42" y="1190" class="text-placeholder">Indicaciones adicionales, advertencias...</text>
+
+  <!-- ═══ Footer ═══ -->
+  <line x1="10" y1="1232" x2="570" y2="1232" class="separator"/>
+  <rect x="30" y="1244" width="130" height="34" class="btn-primary" rx="6"/>
+  <text x="95" y="1265" text-anchor="middle" class="btn-primary-text">Guardar receta</text>
+  <rect x="170" y="1244" width="90" height="34" class="btn-outline" rx="6"/>
+  <text x="215" y="1265" text-anchor="middle" class="btn-outline-text">Cancelar</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- LEYENDA + STATUS DE IMPLEMENTACION                                    -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <rect x="20" y="1294" width="540" height="100" rx="6" fill="#FAFAF8" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="30" y="1312" font-size="10" font-weight="600" fill="#2C2925">Status de implementacion</text>
+
+  <!-- Fila 1 -->
+  <rect x="30" y="1320" width="10" height="10" class="readonly-bg" rx="2"/>
+  <text x="45" y="1329" font-size="9" fill="#6B6660">Auto-fill read-only (10 campos) — ya funciona</text>
+
+  <rect x="300" y="1320" width="10" height="10" class="prefilled-bg" rx="2"/>
+  <text x="315" y="1329" font-size="9" fill="#5A8C3C">Precargado editable (dosis, via) — nuevo query historial</text>
+
+  <!-- Fila 2 -->
+  <rect x="30" y="1336" width="10" height="10" class="calc-bg" rx="2"/>
+  <text x="45" y="1345" font-size="9" fill="#3D9A5C">Calculado (cantidad dispensar) — logica nueva</text>
+
+  <rect x="300" y="1336" width="10" height="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1" rx="2"/>
+  <text x="315" y="1345" font-size="9" fill="#E65100">Migracion schema (freq, duration, dosage) — prescription_item</text>
+
+  <!-- Fila 3 -->
+  <rect x="30" y="1352" width="10" height="10" class="template-bg" rx="2"/>
+  <text x="45" y="1361" font-size="9" fill="#7E57C2">Template (veterinario) — requiere registro de vets futuro</text>
+
+  <rect x="300" y="1352" width="10" height="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1" rx="2"/>
+  <text x="315" y="1361" font-size="9" fill="#1565C0">Nuevo (diagnosticos, presets freq/duracion) — constantes + query</text>
+
+  <!-- Resumen -->
+  <rect x="20" y="1380" width="540" height="24" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="30" y="1396" font-size="9" fill="#6B6660">Inputs del vet: mascota + veterinario + diagnostico + por cada med: dosis (acepta/edita) + frecuencia (select horas) + duracion (select dias). Resto automatico.</text>
+</svg>

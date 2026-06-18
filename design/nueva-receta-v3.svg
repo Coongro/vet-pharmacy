@@ -1,0 +1,290 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 1340" font-family="Roboto, sans-serif">
+  <defs>
+    <style>
+      .bg { fill: #F6F5F1; }
+      .card { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 12; }
+      .text-title { fill: #2C2925; font-size: 16px; font-weight: 600; font-family: 'Noto Serif JP', serif; }
+      .text-section { fill: #9B9893; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+      .text-label { fill: #6B6660; font-size: 11px; }
+      .text-muted { fill: #9B9893; font-size: 11px; }
+      .text-placeholder { fill: #C4C0BA; font-size: 12px; }
+      .text-value { fill: #2C2925; font-size: 13px; }
+      .text-value-sm { fill: #2C2925; font-size: 12px; }
+      .text-calc { fill: #3D9A5C; font-size: 11px; font-weight: 500; }
+      .input-bg { fill: #FFFFFF; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .select-bg { fill: #FFFDF7; stroke: #F5A800; stroke-width: 1.5; rx: 6; }
+      .readonly-bg { fill: #F6F5F1; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .calc-bg { fill: #F0FAF4; stroke: #3D9A5C; stroke-width: 1; rx: 6; }
+      .warn-bg { fill: #FFF3CC; stroke: #D4A017; stroke-width: 1; rx: 6; }
+      .btn-primary { fill: #F5A800; rx: 6; }
+      .btn-primary-text { fill: #FFFFFF; font-size: 13px; font-weight: 500; }
+      .btn-outline { fill: none; stroke: #E5E2DC; stroke-width: 1; rx: 6; }
+      .btn-outline-text { fill: #6B6660; font-size: 13px; }
+      .badge-auto { fill: #E8F5E9; rx: 4; }
+      .badge-auto-text { fill: #3D9A5C; font-size: 9px; font-weight: 600; }
+      .badge-improved { fill: #FFF3CC; rx: 4; }
+      .badge-improved-text { fill: #8A6800; font-size: 9px; font-weight: 600; }
+      .badge-new { fill: #E3F2FD; rx: 4; }
+      .badge-new-text { fill: #1565C0; font-size: 9px; font-weight: 600; }
+      .badge-calc { fill: #F0FAF4; rx: 4; }
+      .badge-calc-text { fill: #3D9A5C; font-size: 9px; font-weight: 600; }
+      .separator { stroke: #E5E2DC; stroke-width: 1; }
+      .annotation { fill: #C8423A; font-size: 10px; font-style: italic; }
+      .lock-icon { fill: #9B9893; font-size: 11px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="540" height="1340" class="bg" rx="12"/>
+  <rect x="10" y="10" width="520" height="1320" class="card"/>
+
+  <!-- ═══ Header ═══ -->
+  <text x="30" y="42" class="text-title">Nueva receta</text>
+  <text x="510" y="42" text-anchor="end" class="text-muted">v3</text>
+  <line x1="10" y1="58" x2="530" y2="58" class="separator"/>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Paciente                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="82" class="text-section">PACIENTE</text>
+  <line x1="105" y1="78" x2="510" y2="78" class="separator"/>
+
+  <!-- Mascota autocomplete (obligatorio) -->
+  <text x="30" y="102" class="text-label">Mascota *</text>
+  <rect x="30" y="108" width="490" height="32" class="input-bg"/>
+  <circle cx="48" cy="124" r="8" fill="none" stroke="#9B9893" stroke-width="1.5"/>
+  <line x1="54" y1="129" x2="58" y2="133" fill="none" stroke="#9B9893" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="64" y="128" class="text-placeholder">Buscar mascota... (obligatorio)</text>
+
+  <rect x="30" y="144" width="82" height="14" class="badge-new"/>
+  <text x="34" y="154" class="badge-new-text">OBLIGATORIO</text>
+  <text x="118" y="154" class="annotation">La mascota debe existir en el sistema</text>
+
+  <!-- Datos auto-rellenados -->
+  <!-- Fila 1: Especie | Raza | Sexo -->
+  <text x="30" y="178" class="text-label">Especie</text>
+  <rect x="30" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="42" y="202" class="text-value-sm">Canino</text>
+
+  <text x="195" y="178" class="text-label">Raza</text>
+  <rect x="195" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="207" y="202" class="text-value-sm">Labrador Retriever</text>
+
+  <text x="365" y="178" class="text-label">Sexo</text>
+  <rect x="365" y="184" width="155" height="28" class="readonly-bg"/>
+  <text x="377" y="202" class="text-value-sm">Macho</text>
+
+  <!-- Fila 2: Edad | Peso | Microchip -->
+  <text x="30" y="228" class="text-label">Edad</text>
+  <rect x="30" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="42" y="252" class="text-value-sm">3a 2m</text>
+
+  <text x="195" y="228" class="text-label">Peso (kg)</text>
+  <rect x="195" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="207" y="252" class="text-value-sm" font-weight="600">28.5 kg</text>
+  <!-- Highlight peso — se usa en cálculos -->
+  <rect x="195" y="264" width="70" height="13" class="badge-calc"/>
+  <text x="199" y="274" class="badge-calc-text">Usado en calculo</text>
+
+  <text x="365" y="228" class="text-label">Microchip</text>
+  <rect x="365" y="234" width="155" height="28" class="readonly-bg"/>
+  <text x="377" y="252" class="text-value-sm">941000024680135</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Propietario                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="300" class="text-section">PROPIETARIO</text>
+  <rect x="135" y="290" width="62" height="14" class="badge-auto"/>
+  <text x="166" y="300" class="badge-auto-text" text-anchor="middle">AUTO-FILL</text>
+  <line x1="205" y1="296" x2="510" y2="296" class="separator"/>
+
+  <text x="30" y="320" class="text-label">Nombre</text>
+  <rect x="30" y="326" width="240" height="28" class="readonly-bg"/>
+  <text x="42" y="344" class="text-value-sm">Juan Perez</text>
+
+  <text x="280" y="320" class="text-label">Telefono</text>
+  <rect x="280" y="326" width="240" height="28" class="readonly-bg"/>
+  <text x="292" y="344" class="text-value-sm">+54 11 5555-1234</text>
+
+  <text x="30" y="370" class="text-label">Documento</text>
+  <rect x="30" y="376" width="240" height="28" class="readonly-bg"/>
+  <text x="42" y="394" class="text-value-sm">DNI 30.456.789</text>
+
+  <text x="280" y="370" class="text-label">Domicilio</text>
+  <rect x="280" y="376" width="240" height="28" class="readonly-bg"/>
+  <text x="292" y="394" class="text-value-sm">Av. Corrientes 1234, CABA</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Veterinario                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="432" class="text-section">VETERINARIO</text>
+  <line x1="130" y1="428" x2="510" y2="428" class="separator"/>
+
+  <text x="30" y="452" class="text-label">Veterinario *</text>
+  <rect x="30" y="458" width="320" height="32" class="select-bg"/>
+  <circle cx="48" cy="474" r="8" fill="none" stroke="#F5A800" stroke-width="1.5"/>
+  <line x1="54" y1="479" x2="58" y2="483" stroke="#F5A800" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="64" y="478" class="text-placeholder">Buscar veterinario...</text>
+
+  <text x="360" y="452" class="text-label">Matricula</text>
+  <rect x="360" y="458" width="160" height="32" class="readonly-bg"/>
+  <text x="372" y="478" class="text-muted">Auto-fill al seleccionar</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Diagnostico                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="520" class="text-section">DIAGNOSTICO</text>
+  <line x1="125" y1="516" x2="510" y2="516" class="separator"/>
+
+  <text x="30" y="540" class="text-label">Vincular a consulta (opcional)</text>
+  <rect x="30" y="546" width="490" height="32" class="input-bg"/>
+  <text x="42" y="566" class="text-muted">Seleccionar consulta reciente...</text>
+  <text x="500" y="566" class="text-muted" text-anchor="end">&#9662;</text>
+
+  <text x="30" y="596" class="text-label">Diagnostico</text>
+  <rect x="30" y="602" width="490" height="32" class="select-bg"/>
+  <text x="42" y="622" class="text-placeholder">Escribir o seleccionar diagnostico previo...</text>
+  <text x="500" y="622" class="text-muted" text-anchor="end">&#9662;</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Medicamentos — REDISEÑADA con dose calculator                -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="664" class="text-section">MEDICAMENTOS</text>
+  <rect x="145" y="654" width="16" height="14" class="badge-auto"/>
+  <text x="153" y="664" class="badge-auto-text" text-anchor="middle">1</text>
+  <line x1="170" y1="660" x2="510" y2="660" class="separator"/>
+
+  <!-- ─── Card medicamento 1 (expandida con dose calculator) ─── -->
+  <rect x="30" y="676" width="490" height="380" rx="8" stroke="#E5E2DC" stroke-width="1" fill="#FAFAF8"/>
+
+  <!-- Fila 1: Medicamento autocomplete + boton eliminar -->
+  <text x="42" y="696" class="text-label">Medicamento 1</text>
+  <rect x="42" y="702" width="430" height="30" class="input-bg"/>
+  <text x="54" y="721" class="text-placeholder">Buscar principio activo o producto...</text>
+  <rect x="480" y="702" width="28" height="30" fill="none" stroke="#E5E2DC" stroke-width="1" rx="4"/>
+  <text x="494" y="721" fill="#C8423A" font-size="13" text-anchor="middle">x</text>
+
+  <!-- Info del medicamento seleccionado (auto-fill, read-only) -->
+  <rect x="42" y="740" width="466" height="26" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="50" y="757" class="text-muted" font-size="10">Amoxicilina 500mg comp. — Lab. Bayer — Via: Oral — Requiere receta</text>
+  <rect x="420" y="742" width="62" height="13" class="badge-auto"/>
+  <text x="451" y="752" class="badge-auto-text" text-anchor="middle">DEL CATALOGO</text>
+
+  <!-- ─── DOSE CALCULATOR ZONE ─── -->
+  <rect x="42" y="774" width="466" height="130" rx="6" fill="#FFFFFF" stroke="#3D9A5C" stroke-width="1" stroke-dasharray="0"/>
+
+  <!-- Header del calculator -->
+  <rect x="42" y="774" width="466" height="22" rx="6" fill="#F0FAF4"/>
+  <text x="54" y="789" fill="#3D9A5C" font-size="10" font-weight="600">CALCULADOR DE DOSIS</text>
+  <text x="496" y="789" fill="#9B9893" font-size="9" text-anchor="end">Peso: 28.5 kg | Especie: Canino</text>
+
+  <!-- Fila: Dose rate | Rango sugerido -->
+  <text x="54" y="812" class="text-label">Dose rate *</text>
+  <rect x="54" y="818" width="70" height="26" class="input-bg"/>
+  <text x="62" y="835" class="text-value-sm" font-size="11">15</text>
+  <!-- Unidad -->
+  <rect x="126" y="818" width="56" height="26" class="input-bg"/>
+  <text x="134" y="835" class="text-muted" font-size="10">mg/kg</text>
+  <text x="170" y="835" class="text-muted" font-size="10">&#9662;</text>
+
+  <!-- Rango sugerido por especie -->
+  <text x="196" y="812" class="text-label">Rango (canino)</text>
+  <rect x="196" y="818" width="100" height="26" class="readonly-bg"/>
+  <text x="208" y="835" class="text-value-sm" font-size="11">10 — 25 mg/kg</text>
+  <rect x="196" y="846" width="62" height="13" class="badge-auto"/>
+  <text x="227" y="856" class="badge-auto-text" text-anchor="middle">FORMULARIO</text>
+  <text x="264" y="856" class="annotation" font-size="9">Rango seguro por especie</text>
+
+  <!-- Resultados calculados -->
+  <text x="316" y="812" class="text-label">Dosis total</text>
+  <rect x="316" y="818" width="84" height="26" class="calc-bg"/>
+  <text x="328" y="836" class="text-calc" font-size="12" font-weight="600">427.5 mg</text>
+
+  <text x="410" y="812" class="text-label">A administrar</text>
+  <rect x="410" y="818" width="86" height="26" class="calc-bg"/>
+  <text x="418" y="836" class="text-calc" font-size="11">0.85 comp.</text>
+  <text x="418" y="856" class="text-muted" font-size="9">= 1 comprimido</text>
+
+  <!-- Indicador: dosis dentro de rango -->
+  <rect x="54" y="862" width="454" height="20" rx="4" fill="#F0FAF4" stroke="#3D9A5C" stroke-width="0.5"/>
+  <!-- Barra de rango visual -->
+  <text x="62" y="876" fill="#3D9A5C" font-size="10">&#10003; Dosis dentro del rango seguro (10-25 mg/kg para caninos)</text>
+
+  <!-- Ejemplo alternativo: dosis FUERA de rango (comentado visualmente) -->
+  <!-- Si estuviera fuera de rango se vería así: -->
+  <rect x="54" y="886" width="454" height="20" rx="4" fill="#FFF3CC" stroke="#D4A017" stroke-width="0.5"/>
+  <text x="62" y="900" fill="#8A6800" font-size="10">&#9888; Ejemplo si fuera de rango: "Dosis 30 mg/kg excede el maximo (25 mg/kg)"</text>
+
+  <!-- ─── Fila inferior: Via | Frecuencia | Duracion | Cantidad ─── -->
+  <!-- Via — auto-fill desde medicamento -->
+  <text x="42" y="928" class="text-label">Via</text>
+  <rect x="42" y="934" width="95" height="26" class="readonly-bg"/>
+  <text x="54" y="951" class="text-value-sm" font-size="10">Oral</text>
+  <rect x="98" y="934" width="28" height="26" fill="none"/>
+  <text x="126" y="951" class="text-muted" font-size="9">&#9662;</text>
+
+  <!-- Frecuencia — combobox presets -->
+  <text x="148" y="928" class="text-label">Frecuencia</text>
+  <rect x="148" y="934" width="100" height="26" class="select-bg"/>
+  <text x="160" y="951" class="text-placeholder" font-size="10">c/12h</text>
+  <text x="236" y="951" fill="#F5A800" font-size="10">&#9662;</text>
+
+  <!-- Duracion — combobox presets -->
+  <text x="258" y="928" class="text-label">Duracion</text>
+  <rect x="258" y="934" width="100" height="26" class="select-bg"/>
+  <text x="270" y="951" class="text-placeholder" font-size="10">7 dias</text>
+  <text x="346" y="951" fill="#F5A800" font-size="10">&#9662;</text>
+
+  <!-- Cantidad a dispensar — CALCULADA -->
+  <text x="370" y="928" class="text-label">Dispensar</text>
+  <rect x="370" y="934" width="88" height="26" class="calc-bg"/>
+  <text x="382" y="951" class="text-calc" font-size="11" font-weight="600">14 comp.</text>
+  <rect x="370" y="963" width="88" height="13" class="badge-calc"/>
+  <text x="374" y="973" class="badge-calc-text" font-size="8">CALCULADO</text>
+  <text x="374" y="985" class="text-muted" font-size="8">1 comp x 2/dia x 7d</text>
+
+  <!-- Override manual -->
+  <text x="464" y="945" class="text-muted" font-size="10" text-anchor="end" cursor="pointer" text-decoration="underline">editar</text>
+
+  <!-- ─── Fin card medicamento ─── -->
+
+  <!-- Boton agregar medicamento -->
+  <rect x="30" y="1068" width="490" height="32" rx="6" fill="none" stroke="#E5E2DC" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="270" y="1088" text-anchor="middle" class="text-muted">+ Agregar medicamento</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN: Observaciones                                                -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <text x="30" y="1126" class="text-section">OBSERVACIONES</text>
+  <line x1="140" y1="1122" x2="510" y2="1122" class="separator"/>
+
+  <rect x="30" y="1134" width="490" height="48" class="input-bg"/>
+  <text x="42" y="1154" class="text-placeholder">Indicaciones adicionales, advertencias...</text>
+
+  <!-- ═══ Footer ═══ -->
+  <line x1="10" y1="1196" x2="530" y2="1196" class="separator"/>
+  <rect x="30" y="1208" width="130" height="34" class="btn-primary" rx="6"/>
+  <text x="95" y="1229" text-anchor="middle" class="btn-primary-text">Guardar receta</text>
+  <rect x="170" y="1208" width="90" height="34" class="btn-outline" rx="6"/>
+  <text x="215" y="1229" text-anchor="middle" class="btn-outline-text">Cancelar</text>
+
+  <!-- ═══ Leyenda v3 ═══ -->
+  <rect x="20" y="1256" width="500" height="62" rx="6" fill="#FAFAF8" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="30" y="1272" font-size="10" font-weight="600" fill="#6B6660">Leyenda v3 — Dose Calculator</text>
+
+  <rect x="30" y="1280" width="10" height="10" class="readonly-bg" rx="2"/>
+  <text x="45" y="1289" font-size="9" fill="#6B6660">Auto-fill (read-only)</text>
+
+  <rect x="150" y="1280" width="10" height="10" fill="#FFFDF7" stroke="#F5A800" stroke-width="1" rx="2"/>
+  <text x="165" y="1289" font-size="9" fill="#8A6800">Combobox con presets</text>
+
+  <rect x="280" y="1280" width="10" height="10" fill="#F0FAF4" stroke="#3D9A5C" stroke-width="1" rx="2"/>
+  <text x="295" y="1289" font-size="9" fill="#3D9A5C">Calculado automaticamente</text>
+
+  <rect x="430" y="1280" width="10" height="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1" rx="2"/>
+  <text x="445" y="1289" font-size="9" fill="#1565C0">Nuevo</text>
+
+  <!-- ═══ Resumen de flujo de datos ═══ -->
+  <rect x="20" y="1295" width="500" height="28" rx="4" fill="#F6F5F1" stroke="#E5E2DC" stroke-width="0.5"/>
+  <text x="30" y="1313" font-size="9" fill="#6B6660">Flujo: Medicamento + Peso + Especie -> Rango sugerido -> Vet ingresa dose rate -> Sistema calcula dosis total + tabletas/ml + cantidad a dispensar</text>
+</svg>

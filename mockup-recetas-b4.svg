@@ -1,0 +1,304 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" font-family="Roboto, sans-serif">
+
+  <!-- Page background (bg: warm beige) -->
+  <rect width="1280" height="800" fill="#F6F5F1"/>
+
+  <!-- LEFT PANEL surface, 320px -->
+  <rect x="0" y="0" width="320" height="800" fill="#FFFFFF" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Header -->
+  <text x="22" y="36" font-family="'Noto Serif JP', serif" font-size="18" font-weight="900" fill="#1A1916">Recetas</text>
+  <rect x="228" y="14" width="78" height="28" rx="7" fill="#F5A800"/>
+  <text x="241" y="33" font-size="12" font-weight="700" fill="#FFFFFF">+ Nueva</text>
+  <line x1="0" y1="52" x2="320" y2="52" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Search input -->
+  <rect x="12" y="62" width="296" height="34" rx="7" fill="#F6F5F1" stroke="#E8E7E2" stroke-width="1"/>
+  <text x="36" y="83" font-size="13" fill="#9B9893">Buscar mascota, dueño, vet...</text>
+  <g transform="translate(16, 72)" stroke="#9B9893" stroke-width="1.5" fill="none">
+    <circle cx="5" cy="5" r="4.5"/>
+    <line x1="8" y1="8" x2="11" y2="11"/>
+  </g>
+
+  <!-- Status tabs -->
+  <g transform="translate(12, 106)">
+    <text x="4" y="14" font-size="12" font-weight="700" fill="#1A1916">Todas</text>
+    <line x1="0" y1="20" x2="40" y2="20" stroke="#F5A800" stroke-width="2"/>
+    <text x="56" y="14" font-size="12" font-weight="500" fill="#9B9893">Activas</text>
+    <text x="114" y="14" font-size="12" font-weight="500" fill="#9B9893">Dispensadas</text>
+    <text x="202" y="14" font-size="12" font-weight="500" fill="#9B9893">Vencidas</text>
+  </g>
+  <line x1="0" y1="132" x2="320" y2="132" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- List Item 1: SELECTED -->
+  <g transform="translate(0, 132)">
+    <rect x="0" y="0" width="320" height="74" fill="#FFFBF0"/>
+    <line x1="0" y1="74" x2="320" y2="74" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="16" y="22" font-size="13" font-weight="700" fill="#1A1916">#45</text>
+    <circle cx="46" cy="18" r="2.5" fill="#3D9A5C"/>
+    <text x="54" y="22" font-size="11" font-weight="500" fill="#3D9A5C">Activa</text>
+    <text x="280" y="22" font-size="11" fill="#9B9893">25/03</text>
+    <text x="16" y="42" font-size="14" font-weight="500" fill="#1A1916">Luna</text>
+    <text x="50" y="42" font-size="14" fill="#9B9893"> · </text>
+    <text x="62" y="42" font-size="14" fill="#6B6760">García</text>
+    <text x="16" y="60" font-size="11" fill="#9B9893">Dr. Ruiz</text>
+  </g>
+
+  <!-- List Item 2: Normal (expiring) -->
+  <g transform="translate(0, 206)">
+    <rect x="0" y="0" width="320" height="82" fill="#FFFFFF"/>
+    <line x1="0" y1="82" x2="320" y2="82" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="16" y="22" font-size="13" font-weight="700" fill="#1A1916">#44</text>
+    <circle cx="46" cy="18" r="2.5" fill="#3D9A5C"/>
+    <text x="54" y="22" font-size="11" font-weight="500" fill="#3D9A5C">Activa</text>
+    <text x="280" y="22" font-size="11" fill="#9B9893">24/03</text>
+    <text x="16" y="42" font-size="14" font-weight="500" fill="#1A1916">Max</text>
+    <text x="42" y="42" font-size="14" fill="#9B9893"> · </text>
+    <text x="54" y="42" font-size="14" fill="#6B6760">López</text>
+    <text x="16" y="60" font-size="11" fill="#9B9893">Dra. Ana Martínez</text>
+    <rect x="16" y="66" width="88" height="14" rx="3" fill="#FFF3CC"/>
+    <text x="22" y="76" font-size="9" font-weight="500" fill="#8A6800">⚠ Vence mañana</text>
+  </g>
+
+  <!-- List Item 3 -->
+  <g transform="translate(0, 288)">
+    <rect x="0" y="0" width="320" height="74" fill="#FFFFFF"/>
+    <line x1="0" y1="74" x2="320" y2="74" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="16" y="22" font-size="13" font-weight="700" fill="#1A1916">#43</text>
+    <circle cx="46" cy="18" r="2.5" fill="#3D9A5C"/>
+    <text x="54" y="22" font-size="11" font-weight="500" fill="#3D9A5C">Activa</text>
+    <text x="280" y="22" font-size="11" fill="#9B9893">23/03</text>
+    <text x="16" y="42" font-size="14" font-weight="500" fill="#1A1916">Rocky</text>
+    <text x="58" y="42" font-size="14" fill="#9B9893"> · </text>
+    <text x="70" y="42" font-size="14" fill="#6B6760">Pérez</text>
+    <text x="16" y="60" font-size="11" fill="#9B9893">Dr. Ruiz</text>
+  </g>
+
+  <!-- List Item 4: Dispensed -->
+  <g transform="translate(0, 362)">
+    <rect x="0" y="0" width="320" height="74" fill="#FFFFFF"/>
+    <line x1="0" y1="74" x2="320" y2="74" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="16" y="22" font-size="13" font-weight="700" fill="#1A1916">#42</text>
+    <circle cx="46" cy="18" r="2.5" fill="#4E8C78"/>
+    <text x="54" y="22" font-size="11" font-weight="500" fill="#4E8C78">Dispensada</text>
+    <text x="280" y="22" font-size="11" fill="#9B9893">22/03</text>
+    <text x="16" y="42" font-size="14" font-weight="500" fill="#1A1916">Coco</text>
+    <text x="48" y="42" font-size="14" fill="#9B9893"> · </text>
+    <text x="60" y="42" font-size="14" fill="#6B6760">Martín</text>
+    <text x="16" y="60" font-size="11" fill="#9B9893">Dr. Ruiz</text>
+  </g>
+
+  <!-- List Item 5: Cancelled -->
+  <g transform="translate(0, 436)">
+    <rect x="0" y="0" width="320" height="74" fill="#FFFFFF"/>
+    <line x1="0" y1="74" x2="320" y2="74" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="16" y="22" font-size="13" font-weight="700" fill="#6B6760">#41</text>
+    <text x="44" y="22" font-size="11" font-weight="500" fill="#9B9893">Cancelada</text>
+    <text x="280" y="22" font-size="11" fill="#9B9893">20/03</text>
+    <text x="16" y="42" font-size="14" font-weight="500" fill="#6B6760">Firulais</text>
+    <text x="70" y="42" font-size="14" fill="#9B9893"> · </text>
+    <text x="82" y="42" font-size="14" fill="#9B9893">Gómez</text>
+    <text x="16" y="60" font-size="11" fill="#9B9893">Dra. Ana Martínez</text>
+  </g>
+
+  <!-- Pagination footer -->
+  <rect x="0" y="760" width="320" height="40" fill="#F6F5F1"/>
+  <line x1="0" y1="760" x2="320" y2="760" stroke="#E8E7E2" stroke-width="1"/>
+  <text x="16" y="785" font-size="11" fill="#9B9893">15 recetas</text>
+  <rect x="232" y="768" width="24" height="24" rx="7" fill="#F5A800"/>
+  <text x="240" y="785" font-size="12" font-weight="700" fill="#FFFFFF">1</text>
+  <rect x="260" y="768" width="24" height="24" rx="7" fill="transparent"/>
+  <text x="268" y="785" font-size="12" font-weight="500" fill="#9B9893">2</text>
+  <text x="296" y="785" font-size="12" font-weight="500" fill="#9B9893">›</text>
+
+  <!-- RIGHT PANEL: Detail card with 18px radius -->
+  <rect x="336" y="12" width="932" height="776" rx="18" fill="#FFFFFF" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Card header -->
+  <text x="362" y="48" font-family="'Noto Serif JP', serif" font-size="17" font-weight="700" fill="#1A1916">Receta #45</text>
+  <rect x="472" y="32" width="56" height="22" rx="7" fill="#EEFAF3"/>
+  <circle cx="484" cy="43" r="2.5" fill="#3D9A5C"/>
+  <text x="492" y="47" font-size="10" font-weight="500" fill="#3D9A5C">Activa</text>
+  <text x="1120" y="44" font-size="11" fill="#9B9893">25/03 → 04/04/2026</text>
+  <line x1="362" y1="62" x2="1242" y2="62" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Info bento: Paciente | Propietario | Veterinario -->
+  <g transform="translate(362, 76)">
+    <!-- Icon: paw print -->
+    <g transform="translate(0, 2)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="2" r="1.5"/>
+      <circle cx="10" cy="1" r="1.5"/>
+      <circle cx="1" cy="5" r="1.5"/>
+      <path d="M4 8 Q6 12 8 8 Q6 6 4 8Z"/>
+    </g>
+    <text x="18" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">PACIENTE</text>
+    <text x="0" y="30" font-size="14" font-weight="500" fill="#1A1916">Luna</text>
+    <text x="0" y="46" font-size="12" fill="#6B6760">Canino · Labrador · 3a 2m</text>
+    <text x="0" y="62" font-size="11" fill="#9B9893">28 kg · Chip: 900118000...</text>
+
+    <line x1="285" y1="0" x2="285" y2="68" stroke="#E8E7E2" stroke-width="1"/>
+
+    <!-- Icon: user -->
+    <g transform="translate(305, 2)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="3.5" r="3"/>
+      <path d="M0 12 Q0 8 6 8 Q12 8 12 12"/>
+    </g>
+    <text x="323" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">PROPIETARIO</text>
+    <text x="305" y="30" font-size="14" font-weight="500" fill="#1A1916">María García</text>
+    <text x="305" y="46" font-size="12" fill="#6B6760">11-4523-8890</text>
+    <text x="305" y="62" font-size="11" fill="#9B9893">DNI 30.456.789</text>
+
+    <line x1="570" y1="0" x2="570" y2="68" stroke="#E8E7E2" stroke-width="1"/>
+
+    <!-- Icon: stethoscope -->
+    <g transform="translate(590, 1)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 1 L4 6 Q4 9 7 9 Q10 9 10 6 L10 1"/>
+      <circle cx="12" cy="7" r="1.5"/>
+      <path d="M12 8.5 L12 10 Q12 13 7 13 L5 13"/>
+    </g>
+    <text x="608" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">VETERINARIO</text>
+    <text x="590" y="30" font-size="14" font-weight="500" fill="#1A1916">Dr. Ruiz</text>
+    <text x="590" y="46" font-size="12" fill="#6B6760">Matrícula 1234</text>
+  </g>
+
+  <line x1="362" y1="152" x2="1242" y2="152" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Diagnostico -->
+  <g transform="translate(362, 164)">
+    <!-- Icon: clipboard -->
+    <g transform="translate(0, 1)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="10" height="11" rx="1.5"/>
+      <path d="M5 1 L5 3 Q5 4 7 4 Q9 4 9 3 L9 1"/>
+      <line x1="5" y1="7.5" x2="9" y2="7.5"/>
+      <line x1="5" y1="10.5" x2="8" y2="10.5"/>
+    </g>
+    <text x="18" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">DIAGNÓSTICO</text>
+    <text x="0" y="32" font-size="14" fill="#1A1916">Infección urinaria recurrente — Tratamiento antibiótico + antiinflamatorio</text>
+  </g>
+
+  <line x1="362" y1="206" x2="1242" y2="206" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Medications table -->
+  <g transform="translate(362, 218)">
+    <!-- Icon: pill -->
+    <g transform="translate(0, 1)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="3" width="12" height="7" rx="3.5"/>
+      <line x1="7" y1="3" x2="7" y2="10"/>
+    </g>
+    <text x="18" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">MEDICAMENTOS RECETADOS</text>
+
+    <line x1="0" y1="24" x2="880" y2="24" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="0" y="42" font-size="11" font-weight="500" fill="#9B9893">Medicamento</text>
+    <text x="260" y="42" font-size="11" font-weight="500" fill="#9B9893">Dosis</text>
+    <text x="380" y="42" font-size="11" font-weight="500" fill="#9B9893">Vía</text>
+    <text x="480" y="42" font-size="11" font-weight="500" fill="#9B9893">Frecuencia</text>
+    <text x="600" y="42" font-size="11" font-weight="500" fill="#9B9893">Duración</text>
+    <text x="720" y="42" font-size="11" font-weight="500" fill="#9B9893">Cant.</text>
+    <text x="800" y="42" font-size="11" font-weight="500" fill="#9B9893">Dispensado</text>
+
+    <!-- Row 1 -->
+    <line x1="0" y1="50" x2="880" y2="50" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="0" y="72" font-size="13" font-weight="500" fill="#1A1916">Enrofloxacina 50mg/ml</text>
+    <text x="260" y="72" font-size="13" fill="#3A3731">5mg/kg</text>
+    <text x="380" y="72" font-size="13" fill="#3A3731">Oral</text>
+    <text x="480" y="72" font-size="13" fill="#3A3731">c/12h</text>
+    <text x="600" y="72" font-size="13" fill="#3A3731">7 días</text>
+    <text x="730" y="72" font-size="13" fill="#1A1916">2</text>
+    <text x="830" y="72" font-size="13" fill="#9B9893">0</text>
+
+    <!-- Row 2 -->
+    <line x1="0" y1="82" x2="880" y2="82" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="0" y="104" font-size="13" font-weight="500" fill="#1A1916">Meloxicam 1.5mg</text>
+    <text x="260" y="104" font-size="13" fill="#3A3731">0.1mg/kg</text>
+    <text x="380" y="104" font-size="13" fill="#3A3731">Oral</text>
+    <text x="480" y="104" font-size="13" fill="#3A3731">c/24h</text>
+    <text x="600" y="104" font-size="13" fill="#3A3731">5 días</text>
+    <text x="730" y="104" font-size="13" fill="#1A1916">1</text>
+    <text x="830" y="104" font-size="13" fill="#9B9893">0</text>
+
+    <!-- Row 3 (last, no bottom border) -->
+    <line x1="0" y1="114" x2="880" y2="114" stroke="#E8E7E2" stroke-width="1"/>
+    <text x="0" y="136" font-size="13" font-weight="500" fill="#1A1916">Omeprazol 20mg</text>
+    <text x="260" y="136" font-size="13" fill="#3A3731">1mg/kg</text>
+    <text x="380" y="136" font-size="13" fill="#3A3731">Oral</text>
+    <text x="480" y="136" font-size="13" fill="#3A3731">c/24h</text>
+    <text x="600" y="136" font-size="13" fill="#3A3731">7 días</text>
+    <text x="730" y="136" font-size="13" fill="#1A1916">1</text>
+    <text x="830" y="136" font-size="13" fill="#9B9893">0</text>
+  </g>
+
+  <line x1="362" y1="370" x2="1242" y2="370" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Notes -->
+  <g transform="translate(362, 382)">
+    <!-- Icon: message/note -->
+    <g transform="translate(0, 1)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="1" width="12" height="9" rx="2"/>
+      <path d="M3 12 L6 9"/>
+      <line x1="4" y1="4.5" x2="10" y2="4.5"/>
+      <line x1="4" y1="7" x2="8" y2="7"/>
+    </g>
+    <text x="18" y="12" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">OBSERVACIONES</text>
+    <text x="0" y="32" font-size="13" fill="#6B6760" font-style="italic">Administrar antibiótico con alimento. Control en 7 días.</text>
+  </g>
+
+  <line x1="362" y1="424" x2="1242" y2="424" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Dispensation confirm section -->
+  <g transform="translate(362, 436)">
+    <!-- Icon: package check -->
+    <g transform="translate(0, 3)" stroke="#9B9893" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="1" width="10" height="10" rx="1.5"/>
+      <polyline points="3 6 5 8 9 4"/>
+    </g>
+    <text x="18" y="14" font-size="10" font-weight="700" fill="#9B9893" letter-spacing="0.5">CONFIRMAR DISPENSACIÓN</text>
+
+    <!-- Item 1 -->
+    <g transform="translate(0, 28)">
+      <text x="0" y="14" font-size="13" font-weight="500" fill="#1A1916">Enrofloxacina 50mg/ml</text>
+      <rect x="540" y="2" width="42" height="16" rx="3" fill="#EEFAF3"/>
+      <circle cx="550" cy="10" r="2" fill="#3D9A5C"/>
+      <text x="556" y="13" font-size="9" font-weight="500" fill="#3D9A5C">OK</text>
+      <text x="16" y="34" font-size="11" fill="#9B9893">Lote A-223 · vence 15/06/26 · 8 disp.</text>
+      <text x="540" y="34" font-size="11" font-weight="700" fill="#1A1916">2 a descontar</text>
+    </g>
+
+    <line x1="0" y1="72" x2="880" y2="72" stroke="#E8E7E2" stroke-width="1"/>
+
+    <!-- Item 2 -->
+    <g transform="translate(0, 80)">
+      <text x="0" y="14" font-size="13" font-weight="500" fill="#1A1916">Meloxicam 1.5mg</text>
+      <rect x="540" y="2" width="42" height="16" rx="3" fill="#EEFAF3"/>
+      <circle cx="550" cy="10" r="2" fill="#3D9A5C"/>
+      <text x="556" y="13" font-size="9" font-weight="500" fill="#3D9A5C">OK</text>
+      <text x="16" y="34" font-size="11" fill="#9B9893">Lote B-110 · vence 20/05/26 · 12 disp.</text>
+      <text x="540" y="34" font-size="11" font-weight="700" fill="#1A1916">1 a descontar</text>
+    </g>
+
+    <line x1="0" y1="124" x2="880" y2="124" stroke="#E8E7E2" stroke-width="1"/>
+
+    <!-- Item 3: no stock -->
+    <g transform="translate(0, 132)">
+      <text x="0" y="14" font-size="13" font-weight="500" fill="#6B6760">Omeprazol 20mg</text>
+      <text x="540" y="14" font-size="11" fill="#9B9893">sin stock vinculado</text>
+    </g>
+  </g>
+
+  <!-- Card footer (bg: beige, border-top) -->
+  <rect x="336" y="728" width="932" height="60" rx="0" fill="#F6F5F1"/>
+  <rect x="336" y="770" width="932" height="18" rx="0 0 18 18" fill="#F6F5F1"/>
+  <line x1="362" y1="728" x2="1242" y2="728" stroke="#E8E7E2" stroke-width="1"/>
+
+  <!-- Primary action (gold) -->
+  <rect x="378" y="742" width="166" height="32" rx="7" fill="#F5A800"/>
+  <text x="396" y="763" font-size="12" font-weight="700" fill="#FFFFFF">Confirmar dispensación</text>
+
+  <!-- Outline button -->
+  <rect x="556" y="742" width="72" height="32" rx="7" fill="transparent" stroke="#E8E7E2" stroke-width="1"/>
+  <text x="570" y="763" font-size="12" font-weight="700" fill="#6B6760">Cancelar</text>
+
+  <!-- Ghost buttons -->
+  <text x="650" y="763" font-size="12" font-weight="500" fill="#6B6760">Imprimir</text>
+  <text x="730" y="763" font-size="12" font-weight="500" fill="#C8423A">Cancelar receta</text>
+
+</svg>

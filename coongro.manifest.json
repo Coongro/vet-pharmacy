@@ -1,0 +1,208 @@
+{
+  "id": "vet-pharmacy",
+  "version": "1.0.0",
+  "apiVersion": "2.0",
+  "entry": "dist/entry.js",
+  "assets": {
+    "styles": [
+      "./dist/assets/tailwind.css",
+      "./dist/assets/fontawesome/css/all.min.css"
+    ]
+  },
+  "contributes": {
+    "menus": [
+      {
+        "path": "Farmacia",
+        "order": 10,
+        "icon": "assets/icons/pharmacy.svg",
+        "color": "#10b981"
+      },
+      {
+        "path": "Farmacia/Medicamentos",
+        "order": 1,
+        "viewId": "vet-pharmacy.medicamentos.open"
+      },
+      {
+        "path": "Farmacia/Recetas",
+        "order": 3,
+        "viewId": "vet-pharmacy.recetas.open"
+      }
+    ],
+    "views": [
+      {
+        "id": "vet-pharmacy.medicamentos.open",
+        "title": "Medicamentos",
+        "component": "./dist/views/medicamentos/index.js",
+        "export": "MedicamentosView"
+      },
+      {
+        "id": "vet-pharmacy.recetas.open",
+        "layout": "full",
+        "title": "Recetas",
+        "component": "./dist/views/recetas/index.js",
+        "export": "RecetasView"
+      }
+    ],
+    "repositories": [
+      {
+        "module": "./dist/repositories/medication.repository.js",
+        "export": "MedicationRepository",
+        "prefix": "vet-pharmacy.medications"
+      },
+      {
+        "module": "./dist/repositories/batch.repository.js",
+        "export": "BatchRepository",
+        "prefix": "vet-pharmacy.batches"
+      },
+      {
+        "module": "./dist/repositories/prescription.repository.js",
+        "export": "PrescriptionRepository",
+        "prefix": "vet-pharmacy.prescriptions"
+      },
+      {
+        "module": "./dist/repositories/prescription-item.repository.js",
+        "export": "PrescriptionItemRepository",
+        "prefix": "vet-pharmacy.prescription-items"
+      },
+      {
+        "module": "./dist/repositories/consultation-med-link.repository.js",
+        "export": "ConsultationMedLinkRepository",
+        "prefix": "vet-pharmacy.consultation-med-links"
+      }
+    ],
+    "viewContributions": [
+      {
+        "targetViewId": "products.detail.open",
+        "slot": "sections",
+        "component": "./dist/contributions/medication-fields-section/index.js",
+        "export": "MedicationFieldsSection",
+        "order": 60,
+        "label": "Datos Farmacéuticos"
+      },
+      {
+        "targetViewId": "products.detail.open",
+        "slot": "sections",
+        "component": "./dist/contributions/batch-table-section/index.js",
+        "export": "BatchTableSection",
+        "order": 70,
+        "label": "Lotes"
+      },
+      {
+        "targetViewId": "consultations.form.open",
+        "slot": "sections",
+        "component": "./dist/contributions/consultation-medication-section/index.js",
+        "export": "ConsultationMedicationSection",
+        "order": 40,
+        "label": "Medicamentos"
+      },
+      {
+        "targetViewId": "consultations.detail.open",
+        "slot": "sections",
+        "component": "./dist/contributions/consultation-medication-detail/index.js",
+        "export": "ConsultationMedicationDetail",
+        "order": 40,
+        "label": "Medicamentos"
+      }
+    ],
+    "settings": {
+      "groups": [
+        {
+          "id": "vet-pharmacy",
+          "label": "Farmacia Veterinaria",
+          "order": 50
+        }
+      ],
+      "pages": [
+        {
+          "id": "vet-pharmacy.general",
+          "group": "vet-pharmacy",
+          "label": "Recetas y stock",
+          "icon": "assets/icons/pharmacy.svg",
+          "order": 10
+        }
+      ],
+      "sections": [
+        {
+          "id": "vet-pharmacy.general.main",
+          "page": "vet-pharmacy.general",
+          "label": "General",
+          "order": 10,
+          "items": [
+            {
+              "key": "vet-pharmacy.usePrescriptions",
+              "type": "boolean",
+              "label": "Usar recetas formales",
+              "description": "Activá el circuito completo de recetas (emisión, dispensación por lote, validez). Desactivado (modo simple): registrás los medicamentos directo en la consulta o por venta de mostrador, sin recetas formales.",
+              "default": false,
+              "tags": ["vet-pharmacy", "prescription", "recetas", "modo", "simple"]
+            },
+            {
+              "key": "vet-pharmacy.expiration.alertDays",
+              "type": "number",
+              "label": "Días de anticipación para alertas",
+              "description": "Cantidad de días antes del vencimiento para mostrar alertas",
+              "default": 30,
+              "min": 1,
+              "max": 365,
+              "tags": [
+                "vet-pharmacy",
+                "expiration",
+                "alertdays",
+                "días",
+                "anticipación",
+                "para",
+                "alertas"
+              ]
+            },
+            {
+              "key": "vet-pharmacy.prescription.validityDays",
+              "type": "number",
+              "label": "Validez de receta controlada (días)",
+              "description": "Días de validez para recetas de medicamentos controlados",
+              "default": 10,
+              "min": 1,
+              "max": 90,
+              "tags": [
+                "vet-pharmacy",
+                "prescription",
+                "validitydays",
+                "validez",
+                "receta",
+                "controlada",
+                "(días)"
+              ]
+            },
+            {
+              "key": "vet-pharmacy.prescription.autoNumber",
+              "type": "boolean",
+              "label": "Numeración automática",
+              "description": "Numerar recetas automáticamente con número correlativo",
+              "default": true,
+              "tags": [
+                "vet-pharmacy",
+                "prescription",
+                "autonumber",
+                "numeración",
+                "automática"
+              ]
+            },
+            {
+              "key": "vet-pharmacy.stock.autoDeduct",
+              "type": "boolean",
+              "label": "Descontar stock al dispensar",
+              "description": "Descontar automáticamente del lote más próximo a vencer (FIFO) al dispensar una receta",
+              "default": true,
+              "tags": [
+                "vet-pharmacy",
+                "stock",
+                "autodeduct",
+                "descontar",
+                "dispensar"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
