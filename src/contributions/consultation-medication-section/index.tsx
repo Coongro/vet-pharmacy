@@ -29,9 +29,9 @@ function fmtExp(iso: string): string {
  * Usa AutocompleteInput en modo selector (showToggle + minChars:0).
  *
  * Lote (COONG-213): igual que las vacunas, cada medicamento recetado puede elegir
- * el LOTE del que sale (batches de vet-pharmacy, FIFO por vencimiento). Al guardar
- * la consulta, el lote elegido se DESCUENTA (batches.update), igual que la vacuna
- * descuenta su variante. Sin lote cargado, el medicamento se receta como antes.
+ * el LOTE del que sale (lotes genéricos de products.batches, FIFO por vencimiento —
+ * COONG-217). Al guardar la consulta, el lote elegido se DESCUENTA (products.batches.update),
+ * igual que la vacuna descuenta su variante. Sin lote cargado, el medicamento se receta como antes.
  *
  * Escucha consultations.medications.create para persistir el link medicamento↔producto.
  */
@@ -90,7 +90,7 @@ export function ConsultationMedicationSection(props: Record<string, unknown>) {
   const loadBatches = useCallback(async (productId: string) => {
     if (batchesByProductRef.current[productId]) return;
     try {
-      const result = await actions.execute<Batch[]>('vet-pharmacy.batches.listByProduct', {
+      const result = await actions.execute<Batch[]>('products.batches.listByProduct', {
         productId,
       });
       const withStock = (result ?? []).filter((b) => (Number(b.quantity) || 0) > 0);
@@ -239,7 +239,7 @@ export function ConsultationMedicationSection(props: Record<string, unknown>) {
             const dispensed = Number(qtyByIdRef.current[m.id] || '1') || 1;
             const next = Math.max(0, (Number(batch.quantity) || 0) - dispensed);
             try {
-              await actions.execute('vet-pharmacy.batches.update', {
+              await actions.execute('products.batches.update', {
                 id: batchId,
                 data: { quantity: String(next) },
               });

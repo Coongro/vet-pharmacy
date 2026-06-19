@@ -50,11 +50,6 @@
         "prefix": "vet-pharmacy.medications"
       },
       {
-        "module": "./dist/repositories/batch.repository.js",
-        "export": "BatchRepository",
-        "prefix": "vet-pharmacy.batches"
-      },
-      {
         "module": "./dist/repositories/prescription.repository.js",
         "export": "PrescriptionRepository",
         "prefix": "vet-pharmacy.prescriptions"

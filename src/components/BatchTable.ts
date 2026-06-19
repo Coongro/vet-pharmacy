@@ -291,7 +291,7 @@ export function BatchTable({ productId }: BatchTableProps) {
         status: 'active',
       };
 
-      await actions.execute('vet-pharmacy.batches.create', { data });
+      await actions.execute('products.batches.create', { data });
       toast.success('Lote agregado', `Lote ${data.batch_number} registrado correctamente`);
       setShowForm(false);
       await refetch();
@@ -315,7 +315,7 @@ export function BatchTable({ productId }: BatchTableProps) {
   const handleDeleteConfirm = useCallback(
     async (id: string) => {
       try {
-        await actions.execute('vet-pharmacy.batches.delete', { id });
+        await actions.execute('products.batches.delete', { id });
         toast.success('Lote eliminado', 'El lote fue eliminado correctamente');
         setConfirmingDeleteId(null);
         await refetch();

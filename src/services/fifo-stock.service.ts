@@ -1,21 +1,33 @@
 /**
  * Servicio FIFO de stock — lógica compartida entre preview y dispensación.
  *
- * Centraliza el cálculo de qué lotes se consumirían (preview)
- * y la ejecución real del consumo (consume).
+ * Centraliza el cálculo de qué lotes se consumirían (preview) y la ejecución real del
+ * consumo (consume). Desde COONG-217 los lotes son GENÉRICOS: viven en `products.batches`
+ * (no en una tabla propia de vet-pharmacy), así Salidas/Farmacia/dispensación comparten el
+ * mismo stock. Por eso consume el contrato `products.batches.*` vía acción (cross-plugin).
  */
-import { BatchRepository } from '../repositories/batch.repository.js';
+import { actions } from '@coongro/plugin-sdk';
+
 import type { BatchPreview } from '../types/domain.js';
 
-export class FIFOStockService {
-  constructor(private readonly batchRepo: BatchRepository) {}
+/** Forma del lote genérico (products.batches) que necesita el FIFO. */
+interface ProductsBatchRow {
+  id: string;
+  batch_number: string;
+  expiration_date: string | null;
+  quantity: string;
+  status: string;
+}
 
+export class FIFOStockService {
   /**
-   * Calcula qué lotes se consumirían para cubrir `needed` unidades.
-   * NO modifica la BD — solo lectura.
+   * Calcula qué lotes se consumirían para cubrir `needed` unidades. NO modifica la BD.
    */
   async preview(productId: string, needed: number): Promise<BatchPreview[]> {
-    const batches = await this.batchRepo.listByProduct({ productId });
+    const batches =
+      (await actions.execute<ProductsBatchRow[]>('products.batches.listByProduct', {
+        productId,
+      })) ?? [];
     const active = batches.filter((b) => b.status === 'active' && parseFloat(b.quantity) > 0);
 
     const result: BatchPreview[] = [];
@@ -29,7 +41,7 @@ export class FIFOStockService {
       result.push({
         batchId: batch.id,
         batchNumber: batch.batch_number,
-        expirationDate: batch.expiration_date,
+        expirationDate: batch.expiration_date ?? '',
         available,
         toConsume,
       });
@@ -39,7 +51,7 @@ export class FIFOStockService {
   }
 
   /**
-   * Ejecuta el consumo FIFO real. Modifica lotes en la BD.
+   * Ejecuta el consumo FIFO real. Modifica lotes en la BD (products.batches).
    * Retorna la cantidad total efectivamente consumida.
    */
   async consume(
@@ -51,11 +63,12 @@ export class FIFOStockService {
     let batchesModified = 0;
 
     for (const entry of previewed) {
-      await this.batchRepo.update({
+      const left = entry.available - entry.toConsume;
+      await actions.execute('products.batches.update', {
         id: entry.batchId,
         data: {
-          quantity: String(entry.available - entry.toConsume),
-          status: entry.available - entry.toConsume <= 0 ? 'depleted' : 'active',
+          quantity: String(left),
+          status: left <= 0 ? 'depleted' : 'active',
         },
       });
       consumed += entry.toConsume;

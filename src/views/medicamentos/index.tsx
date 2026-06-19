@@ -74,7 +74,7 @@ export function MedicamentosView() {
                 expiration_date: string;
                 status: string;
               }>
-            >('vet-pharmacy.batches.list')
+            >('products.batches.list')
             .catch(
               () =>
                 [] as Array<{

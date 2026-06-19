@@ -8,7 +8,6 @@
  */
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 
-import { BatchRepository } from '../repositories/batch.repository.js';
 import { PrescriptionItemRepository } from '../repositories/prescription-item.repository.js';
 import { PrescriptionRepository } from '../repositories/prescription.repository.js';
 import { FIFOStockService } from '../services/fifo-stock.service.js';
@@ -21,7 +20,7 @@ export function createDispensePrescription(
 ) {
   const prescriptionRepo = new PrescriptionRepository(db);
   const itemRepo = new PrescriptionItemRepository(db);
-  const fifo = new FIFOStockService(new BatchRepository(db));
+  const fifo = new FIFOStockService();
 
   return async (args: unknown): Promise<DispenseResult> => {
     const { prescriptionId, autoDeductStock = true } = args as {

@@ -6,7 +6,6 @@
  */
 export * from './schema/index.js';
 export { MedicationRepository } from './repositories/medication.repository.js';
-export { BatchRepository } from './repositories/batch.repository.js';
 export { PrescriptionRepository } from './repositories/prescription.repository.js';
 export { PrescriptionItemRepository } from './repositories/prescription-item.repository.js';
 export { ConsultationMedLinkRepository } from './repositories/consultation-med-link.repository.js';

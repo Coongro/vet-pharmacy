@@ -21,7 +21,7 @@ export function useBatches(productId: string | null | undefined) {
     setLoading(true);
     setError(null);
     try {
-      const result = await actions.execute<Batch[]>('vet-pharmacy.batches.listByProduct', {
+      const result = await actions.execute<Batch[]>('products.batches.listByProduct', {
         productId,
       });
       if (!mountedRef.current) return;
