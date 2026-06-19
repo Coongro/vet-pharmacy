@@ -6,14 +6,13 @@
  */
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 
-import { BatchRepository } from '../repositories/batch.repository.js';
 import { PrescriptionItemRepository } from '../repositories/prescription-item.repository.js';
 import { FIFOStockService } from '../services/fifo-stock.service.js';
 import type { ItemPreview, DispensationPreview } from '../types/domain.js';
 
 export function createGetDispensationPreview(db: ModuleDatabaseAPI) {
   const itemRepo = new PrescriptionItemRepository(db);
-  const fifo = new FIFOStockService(new BatchRepository(db));
+  const fifo = new FIFOStockService();
 
   return async (args: unknown): Promise<DispensationPreview> => {
     const { prescriptionId } = args as { prescriptionId: string };
