@@ -1,0 +1,1 @@
+DROP TABLE "module_vet_pharmacy_batches" CASCADE;
