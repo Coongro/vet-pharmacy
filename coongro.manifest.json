@@ -63,6 +63,11 @@
         "module": "./dist/repositories/consultation-med-link.repository.js",
         "export": "ConsultationMedLinkRepository",
         "prefix": "vet-pharmacy.consultation-med-links"
+      },
+      {
+        "module": "./dist/repositories/medication-component.repository.js",
+        "export": "MedicationComponentRepository",
+        "prefix": "vet-pharmacy.medication-components"
       }
     ],
     "viewContributions": [
@@ -129,7 +134,13 @@
               "label": "Usar recetas formales",
               "description": "Activá el circuito completo de recetas (emisión, dispensación por lote, validez). Desactivado (modo simple): registrás los medicamentos directo en la consulta o por venta de mostrador, sin recetas formales.",
               "default": false,
-              "tags": ["vet-pharmacy", "prescription", "recetas", "modo", "simple"]
+              "tags": [
+                "vet-pharmacy",
+                "prescription",
+                "recetas",
+                "modo",
+                "simple"
+              ]
             },
             {
               "key": "vet-pharmacy.expiration.alertDays",

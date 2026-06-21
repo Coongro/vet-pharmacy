@@ -1,0 +1,1 @@
+ALTER TABLE "module_vet_pharmacy_medication_components" ADD COLUMN "position" integer DEFAULT 0 NOT NULL;

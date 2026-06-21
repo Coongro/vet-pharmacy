@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
-import { getHostReact, getHostUI, usePlugin, actions } from '@coongro/plugin-sdk';
+import { getHostReact, getHostUI, actions } from '@coongro/plugin-sdk';
 
 import { CreateMedicationButton } from '../../components/CreateMedicationButton.js';
 import { ExpirationBadge } from '../../components/ExpirationBadge.js';
 import { MigrationBanner } from '../../components/MigrationBanner.js';
 import { useDetectTextMedications } from '../../hooks/useDetectTextMedications.js';
 import { useMedications } from '../../hooks/useMedications.js';
+import { SPECIES_LABEL, SPECIES_ICON } from '../../species.js';
+import type { Medication } from '../../types/domain.js';
 
 const React = getHostReact();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -13,43 +15,15 @@ const UI = getHostUI();
 const { useState, useEffect, useCallback } = React;
 const h = React.createElement;
 
-// ─── Componente badge Sí/No ───────────────────────────────────────────────────
-
-function BoolBadge({ value }: { value: boolean }) {
-  return h(UI.Badge, { variant: value ? 'success-soft' : 'secondary' }, value ? 'Sí' : 'No');
-}
-
-// ─── Filas skeleton para estado de carga ──────────────────────────────────────
-
-function SkeletonRows() {
-  const cols = 9;
-  return h(
-    React.Fragment,
-    null,
-    ...[0, 1, 2, 3, 4].map((i) =>
-      h(
-        UI.TableRow,
-        { key: i },
-        ...[...Array(cols)].map((_, ci) =>
-          h(
-            UI.TableCell,
-            { key: ci },
-            h(UI.Skeleton, {
-              className: `h-4 inline-block`,
-              style: { width: `${55 + Math.sin(i * cols + ci) * 30}%` },
-            })
-          )
-        )
-      )
-    )
-  );
+// Dedup + orden alfabético (es), filtrando vacíos. Para derivar los catálogos
+// vivos (valores ya usados en el tenant) que se pasan al alta.
+function uniqSorted(vals: Array<string | null | undefined>): string[] {
+  return Array.from(new Set(vals.filter(Boolean))).sort((a, b) => a.localeCompare(b, 'es'));
 }
 
 // ─── Vista principal ──────────────────────────────────────────────────────────
 
 export function MedicamentosView() {
-  const { views } = usePlugin();
-
   const { data, loading, filters: _filters, setFilters, refetch } = useMedications();
   const detection = useDetectTextMedications();
 
@@ -117,12 +91,10 @@ export function MedicamentosView() {
 
   // Estado de controles de filtro (locales, con debounce para texto)
   const [searchInput, setSearchInput] = useState('');
-  const [laboratoryInput, setLaboratoryInput] = useState('');
   const [prescriptionFilter, setPrescriptionFilter] = useState<'' | 'true' | 'false'>('');
   const [controlledFilter, setControlledFilter] = useState<'' | 'true' | 'false'>('');
 
   const debouncedSearch = UI.useDebounce(searchInput, 300);
-  const debouncedLaboratory = UI.useDebounce(laboratoryInput, 300);
 
   // Sincronizar filtros locales con el hook (un solo effect, sin disparar en mount)
   const isFirstRender = React.useRef(true);
@@ -133,24 +105,149 @@ export function MedicamentosView() {
     }
     setFilters({
       search: debouncedSearch || undefined,
-      laboratory: debouncedLaboratory || undefined,
       requires_prescription: prescriptionFilter === '' ? undefined : prescriptionFilter === 'true',
       controlled: controlledFilter === '' ? undefined : controlledFilter === 'true',
     });
-  }, [debouncedSearch, debouncedLaboratory, prescriptionFilter, controlledFilter]);
+  }, [debouncedSearch, prescriptionFilter, controlledFilter]);
 
-  const handleRowClick = useCallback(
-    (productId: string) => {
-      views.open('products.detail.open', { productId });
-    },
-    [views]
+  // Edición: la fila clickeada abre el modal con ese medicamento (antes intentaba
+  // abrir products.detail.open, que no existe en este setup → 404).
+  const [editTarget, setEditTarget] = useState<Medication | null>(null);
+
+  // Columnas del DataTable (patrón estándar de Coongro, como Cobros/Salidas):
+  // cada celda se arma con clases tailwind y UI.Badge, sin CSS custom.
+  const columns = React.useMemo(
+    () => [
+      {
+        key: 'medicamento',
+        header: 'Medicamento',
+        render: (m: Medication) =>
+          h(
+            'div',
+            null,
+            h('div', { className: 'font-medium text-cg-text' }, m.active_ingredient),
+            m.concentration
+              ? h('div', { className: 'text-xs text-cg-text-muted mt-0.5' }, m.concentration)
+              : null
+          ),
+      },
+      {
+        key: 'lab',
+        header: 'Laboratorio / Vía',
+        render: (m: Medication) =>
+          h(
+            'div',
+            { className: 'flex flex-col gap-1 items-start' },
+            h('span', { className: 'text-sm' }, m.laboratory || '—'),
+            m.administration_route
+              ? h(UI.Badge, { variant: 'secondary' } as any, m.administration_route)
+              : null
+          ),
+      },
+      {
+        key: 'especies',
+        header: 'Especies',
+        render: (m: Medication) => {
+          const list = m.species ?? [];
+          if (list.length === 0) return h('span', { className: 'text-cg-text-muted' }, '—');
+          return h(
+            'div',
+            { className: 'flex flex-wrap gap-1' },
+            ...list.map((code) =>
+              h(
+                UI.Badge,
+                { key: code, variant: 'secondary' } as any,
+                h(UI.DynamicIcon, { icon: SPECIES_ICON[code] ?? 'PawPrint', size: 11 } as any),
+                h('span', { className: 'ml-1' }, SPECIES_LABEL[code] ?? code)
+              )
+            )
+          );
+        },
+      },
+      {
+        key: 'indicadores',
+        header: 'Indicadores',
+        render: (m: Medication) =>
+          h(
+            'div',
+            { className: 'flex flex-col gap-1 items-start' },
+            h(
+              UI.Badge,
+              { variant: m.requires_prescription ? 'orange' : 'secondary' } as any,
+              m.requires_prescription ? 'Receta · Sí' : 'Receta · No'
+            ),
+            h(
+              UI.Badge,
+              { variant: m.controlled ? 'danger-soft' : 'secondary' } as any,
+              m.controlled ? 'Controlado' : 'No controlado'
+            )
+          ),
+      },
+      {
+        key: 'stock',
+        header: 'Stock',
+        render: (m: Medication) => {
+          const e = ext[m.product_id];
+          const stock = e?.stock ?? 0;
+          return stock > 0
+            ? h('span', { className: 'font-mono font-semibold' }, `${stock} u.`)
+            : h(UI.Badge, { variant: 'danger-soft' } as any, 'Sin stock');
+        },
+      },
+      {
+        key: 'vence',
+        header: 'Vence',
+        render: (m: Medication) => {
+          const e = ext[m.product_id];
+          return e?.expiry
+            ? h(ExpirationBadge, { expirationDate: e.expiry })
+            : h('span', { className: 'text-cg-text-muted' }, '—');
+        },
+      },
+      {
+        key: 'precio',
+        header: 'Precio',
+        className: 'text-right',
+        render: (m: Medication) => {
+          const e = ext[m.product_id];
+          const has = e?.price !== null && e?.price !== undefined && e?.price !== '';
+          return h(
+            'span',
+            { className: 'font-mono font-semibold' },
+            has ? `$ ${Number(e.price).toLocaleString('es-AR')}` : '—'
+          );
+        },
+      },
+    ],
+    [ext]
+  );
+
+  // Catálogo vivo: valores ya usados en el tenant para cada selector. Mismas
+  // opciones para alta y edición, derivadas una sola vez (evita recomputar en
+  // cada render y desincronizar las dos llamadas a CreateMedicationButton).
+  const catalogOptions = React.useMemo(
+    () => ({
+      paOptions: uniqSorted(data.map((m) => m.active_ingredient)),
+      labOptions: uniqSorted(data.map((m) => m.laboratory)),
+      extraRoutes: uniqSorted(data.map((m) => m.administration_route)),
+      extraClassifications: uniqSorted(
+        data.map((m) => (m.metadata as { classification?: string } | null)?.classification)
+      ),
+      extraPresTypes: uniqSorted(
+        data.map((m) => (m.metadata as { presentationType?: string } | null)?.presentationType)
+      ),
+      extraPresUnits: uniqSorted(
+        data.map((m) => (m.metadata as { presentationUnit?: string } | null)?.presentationUnit)
+      ),
+    }),
+    [data]
   );
 
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return h(
     'div',
-    { className: 'p-6 min-h-full bg-[var(--cg-bg)] text-[var(--cg-text)]' },
+    { className: 'vp-meds p-6 min-h-full bg-[var(--cg-bg)] text-[var(--cg-text)]' },
 
     // Header
     h(
@@ -160,16 +257,10 @@ export function MedicamentosView() {
       h(
         'div',
         { className: 'flex items-center gap-2' },
-        h(UI.Input, {
-          type: 'text',
-          size: 'sm',
-          placeholder: 'Buscar por principio activo...',
-          value: searchInput,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => setSearchInput(e.target.value),
-          'aria-label': 'Buscar medicamentos',
-          className: 'w-[240px]',
-        }),
-        h(CreateMedicationButton, { onSuccess: () => void refetch() })
+        h(CreateMedicationButton, {
+          onSuccess: () => void refetch(),
+          ...catalogOptions,
+        })
       )
     ),
 
@@ -183,158 +274,60 @@ export function MedicamentosView() {
         })
       : null,
 
-    // Barra de filtros
+    // Lista — UI.DataTable (patrón estándar de Coongro, como Cobros/Salidas)
     h(
       'div',
-      { className: 'flex gap-3 items-center mb-4 flex-wrap' },
-
-      // Filtro: Requiere receta
-      h(
-        'div',
-        { className: 'flex items-center gap-1.5' },
-        h(
-          UI.Label,
-          { className: 'text-[13px] text-[var(--cg-text-muted)] whitespace-nowrap' },
-          'Requiere receta:'
-        ),
-        h(
-          UI.Select,
+      { className: 'bg-cg-bg rounded-xl border border-cg-border p-6 shadow-sm' },
+      h(UI.DataTable, {
+        data,
+        columns,
+        rowKey: (m: Medication) => m.id,
+        loading,
+        onRowClick: (m: Medication) => setEditTarget(m),
+        searchValue: searchInput,
+        onSearchChange: setSearchInput,
+        searchPlaceholder: 'Principio activo o laboratorio',
+        filterSections: [
           {
+            label: 'Receta',
+            options: [
+              { value: '', label: 'Todos' },
+              { value: 'true', label: 'Sí' },
+              { value: 'false', label: 'No' },
+            ],
             value: prescriptionFilter,
-            onValueChange: (val: string) => setPrescriptionFilter(val as '' | 'true' | 'false'),
-            placeholder: 'Todos',
-            clearable: true,
-            'aria-label': 'Filtrar por receta requerida',
+            onChange: (v: string) => setPrescriptionFilter(v as '' | 'true' | 'false'),
           },
-          h(UI.SelectItem, { value: '' }, 'Todos'),
-          h(UI.SelectItem, { value: 'true' }, 'Sí'),
-          h(UI.SelectItem, { value: 'false' }, 'No')
-        )
-      ),
-
-      // Filtro: Controlado
-      h(
-        'div',
-        { className: 'flex items-center gap-1.5' },
-        h(
-          UI.Label,
-          { className: 'text-[13px] text-[var(--cg-text-muted)] whitespace-nowrap' },
-          'Controlado:'
-        ),
-        h(
-          UI.Select,
           {
+            label: 'Controlado',
+            options: [
+              { value: '', label: 'Todos' },
+              { value: 'true', label: 'Sí' },
+              { value: 'false', label: 'No' },
+            ],
             value: controlledFilter,
-            onValueChange: (val: string) => setControlledFilter(val as '' | 'true' | 'false'),
-            placeholder: 'Todos',
-            clearable: true,
-            'aria-label': 'Filtrar por controlado',
+            onChange: (v: string) => setControlledFilter(v as '' | 'true' | 'false'),
           },
-          h(UI.SelectItem, { value: '' }, 'Todos'),
-          h(UI.SelectItem, { value: 'true' }, 'Sí'),
-          h(UI.SelectItem, { value: 'false' }, 'No')
-        )
-      ),
-
-      // Filtro: Laboratorio
-      h(
-        'div',
-        { className: 'flex items-center gap-1.5' },
-        h(
-          UI.Label,
-          { className: 'text-[13px] text-[var(--cg-text-muted)] whitespace-nowrap' },
-          'Laboratorio:'
-        ),
-        h(UI.Input, {
-          type: 'text',
-          size: 'sm',
-          placeholder: 'Filtrar por laboratorio',
-          value: laboratoryInput,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => setLaboratoryInput(e.target.value),
-          'aria-label': 'Filtrar por laboratorio',
-          className: 'min-w-[160px]',
-        })
-      )
+        ],
+        emptyState: {
+          title: 'No hay medicamentos',
+          description: 'Cargá tu primer medicamento desde el vademécum de SENASA o manualmente.',
+        },
+        skeletonRows: 8,
+      } as any)
     ),
 
-    // Tabla
-    h(
-      UI.Table,
-      null,
-
-      // Encabezado
-      h(
-        UI.TableHeader,
-        null,
-        h(
-          UI.TableRow,
-          null,
-          h(UI.TableHead, null, 'Principio activo'),
-          h(UI.TableHead, null, 'Concentración'),
-          h(UI.TableHead, null, 'Laboratorio'),
-          h(UI.TableHead, null, 'Vía'),
-          h(UI.TableHead, null, 'Receta'),
-          h(UI.TableHead, null, 'Controlado'),
-          h(UI.TableHead, null, 'Precio'),
-          h(UI.TableHead, null, 'Stock'),
-          h(UI.TableHead, null, 'Vence')
-        )
-      ),
-
-      // Cuerpo
-      h(
-        UI.TableBody,
-        null,
-
-        loading
-          ? h(SkeletonRows, null)
-          : data.length === 0
-            ? h(
-                UI.TableRow,
-                null,
-                h(
-                  UI.TableCell,
-                  { colSpan: 9 },
-                  h(UI.EmptyState, { title: 'No se encontraron medicamentos' })
-                )
-              )
-            : data.map((med) => {
-                const e = ext[med.product_id] ?? { price: null, stock: 0, expiry: null };
-                return h(
-                  UI.TableRow,
-                  {
-                    key: med.id,
-                    className: 'cursor-pointer hover:bg-[var(--cg-bg-hover)] transition-colors',
-                    onClick: () => handleRowClick(med.product_id),
-                  },
-                  h(UI.TableCell, null, med.active_ingredient),
-                  h(UI.TableCell, null, med.concentration ?? '—'),
-                  h(UI.TableCell, null, med.laboratory ?? '—'),
-                  h(UI.TableCell, null, med.administration_route ?? '—'),
-                  h(UI.TableCell, null, h(BoolBadge, { value: med.requires_prescription })),
-                  h(UI.TableCell, null, h(BoolBadge, { value: med.controlled })),
-                  h(
-                    UI.TableCell,
-                    null,
-                    e.price !== null && e.price !== undefined && e.price !== ''
-                      ? `$ ${Number(e.price).toLocaleString('es-AR')}`
-                      : '—'
-                  ),
-                  h(
-                    UI.TableCell,
-                    null,
-                    e.stock > 0
-                      ? String(e.stock)
-                      : h('span', { className: 'text-[var(--cg-text-muted)]' }, 'Sin stock')
-                  ),
-                  h(
-                    UI.TableCell,
-                    null,
-                    e.expiry ? h(ExpirationBadge, { expirationDate: e.expiry }) : '—'
-                  )
-                );
-              })
-      )
-    )
+    // Modal de edición — se abre con el medicamento de la fila clickeada.
+    editTarget
+      ? h(CreateMedicationButton, {
+          editMedication: editTarget,
+          onEditClose: () => setEditTarget(null),
+          onSuccess: () => {
+            void refetch();
+            setEditTarget(null);
+          },
+          ...catalogOptions,
+        })
+      : null
   );
 }
