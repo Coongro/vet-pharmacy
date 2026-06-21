@@ -6,7 +6,10 @@ export interface Medication {
   active_ingredient: string;
   concentration: string | null;
   presentation: string | null;
+  /** @deprecated Cache del nombre; la referencia canónica es `laboratory_id` (COONG-219). */
   laboratory: string | null;
+  /** Referencia al maestro de laboratorios compartido (vademecum, COONG-219). */
+  laboratory_id: string | null;
   species: string[] | null;
   administration_route: string | null;
   requires_prescription: boolean;
@@ -25,6 +28,7 @@ export interface CreateMedicationData {
   concentration?: string | null;
   presentation?: string | null;
   laboratory?: string | null;
+  laboratory_id?: string | null;
   species?: string[] | null;
   administration_route?: string | null;
   requires_prescription?: boolean;

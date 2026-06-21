@@ -12,7 +12,16 @@ export const medicationTable = pgTable('module_vet_pharmacy_medications', {
   active_ingredient: text('active_ingredient'),
   concentration: text('concentration'),
   presentation: text('presentation'),
+  /**
+   * @deprecated Cache denormalizado del NOMBRE del laboratorio. La referencia
+   * canónica es `laboratory_id` (maestro compartido en @coongro/vademecum,
+   * COONG-219). Se mantiene en sync al guardar para que las vistas que todavía
+   * leen el texto (lista, recetas, consultas) no necesiten resolver contra el
+   * maestro; migrarlas a resolver por id permitirá quitar esta columna.
+   */
   laboratory: text('laboratory'),
+  /** Referencia al maestro de laboratorios compartido (vademecum, COONG-219). */
+  laboratory_id: uuid('laboratory_id'),
   species: jsonb('species'),
   administration_route: text('administration_route'),
   requires_prescription: boolean('requires_prescription').notNull(),

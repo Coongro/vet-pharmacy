@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 import { getHostReact, getHostUI, actions, usePlugin } from '@coongro/plugin-sdk';
+import { LaboratorySelect, useLaboratories } from '@coongro/vademecum';
 
 import { useMedication } from '../hooks/useMedication.js';
 import type { Medication, CreateMedicationData } from '../types/domain.js';
@@ -7,7 +8,7 @@ import type { Medication, CreateMedicationData } from '../types/domain.js';
 const React = getHostReact();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const UI = getHostUI();
-const { useState, useCallback } = React;
+const { useState, useCallback, useMemo } = React;
 const h = React.createElement;
 
 interface MedicationFieldsProps {
@@ -18,7 +19,7 @@ interface FormState {
   active_ingredient: string;
   concentration: string;
   presentation: string;
-  laboratory: string;
+  laboratory_id: string;
   administration_route: string;
   species: string;
   requires_prescription: boolean;
@@ -32,7 +33,7 @@ function buildFormState(med: Medication | null): FormState {
     active_ingredient: med?.active_ingredient ?? '',
     concentration: med?.concentration ?? '',
     presentation: med?.presentation ?? '',
-    laboratory: med?.laboratory ?? '',
+    laboratory_id: med?.laboratory_id ?? '',
     administration_route: med?.administration_route ?? '',
     species: med?.species ? med.species.join(', ') : '',
     requires_prescription: med?.requires_prescription ?? false,
@@ -132,6 +133,14 @@ function EditCheckbox({ label, name, checked, onChange }: EditCheckboxProps) {
 export function MedicationFields({ productId }: MedicationFieldsProps) {
   const { toast } = usePlugin();
   const { medication, loading, refetch } = useMedication(productId);
+  // Maestro compartido (vademecum): resuelve el nombre del laboratorio por id y
+  // alimenta el cache denormalizado `laboratory` al guardar.
+  const { laboratories } = useLaboratories();
+  const labNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const lab of laboratories) map.set(lab.id, lab.name);
+    return map;
+  }, [laboratories]);
 
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -165,7 +174,8 @@ export function MedicationFields({ productId }: MedicationFieldsProps) {
           active_ingredient: form.active_ingredient,
           concentration: form.concentration || null,
           presentation: form.presentation || null,
-          laboratory: form.laboratory || null,
+          laboratory_id: form.laboratory_id || null,
+          laboratory: form.laboratory_id ? (labNameById.get(form.laboratory_id) ?? null) : null,
           administration_route: form.administration_route || null,
           species: speciesArray.length > 0 ? speciesArray : null,
           requires_prescription: form.requires_prescription,
@@ -184,7 +194,8 @@ export function MedicationFields({ productId }: MedicationFieldsProps) {
           active_ingredient: form.active_ingredient,
           concentration: form.concentration || null,
           presentation: form.presentation || null,
-          laboratory: form.laboratory || null,
+          laboratory_id: form.laboratory_id || null,
+          laboratory: form.laboratory_id ? (labNameById.get(form.laboratory_id) ?? null) : null,
           administration_route: form.administration_route || null,
           species: speciesArray.length > 0 ? speciesArray : null,
           requires_prescription: form.requires_prescription,
@@ -284,13 +295,19 @@ export function MedicationFields({ productId }: MedicationFieldsProps) {
             value: form.presentation,
             onChange: handleFieldChange as (name: keyof FormState, value: string) => void,
           }),
-          h(EditField, {
-            key: 'laboratory',
-            label: 'Laboratorio',
-            name: 'laboratory',
-            value: form.laboratory,
-            onChange: handleFieldChange as (name: keyof FormState, value: string) => void,
-          }),
+          h(
+            'div',
+            { key: 'laboratory_id', className: 'flex flex-col gap-1' },
+            h(
+              UI.Label,
+              { className: 'text-[11px] uppercase tracking-wide text-cg-text-muted' },
+              'Laboratorio'
+            ),
+            h(LaboratorySelect, {
+              value: form.laboratory_id,
+              onValueChange: (v: string) => handleFieldChange('laboratory_id', v),
+            })
+          ),
           h(EditField, {
             key: 'administration_route',
             label: 'Vía de administración',
@@ -399,7 +416,7 @@ export function MedicationFields({ productId }: MedicationFieldsProps) {
         h(ReadField, {
           key: 'laboratory',
           label: 'Laboratorio',
-          value: med.laboratory,
+          value: labNameById.get(med.laboratory_id ?? '') ?? med.laboratory,
         }),
         h(ReadField, {
           key: 'administration_route',

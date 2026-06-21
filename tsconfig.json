@@ -30,6 +30,12 @@
       ],
       "@coongro/plugin-sdk/*": [
         "../../packages/plugin-sdk/dist/*"
+      ],
+      "@coongro/vademecum": [
+        "../vademecum/dist/index.d.ts"
+      ],
+      "@coongro/vademecum/server": [
+        "../vademecum/dist/server.d.ts"
       ]
     }
   },

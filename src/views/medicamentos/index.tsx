@@ -228,7 +228,6 @@ export function MedicamentosView() {
   const catalogOptions = React.useMemo(
     () => ({
       paOptions: uniqSorted(data.map((m) => m.active_ingredient)),
-      labOptions: uniqSorted(data.map((m) => m.laboratory)),
       extraRoutes: uniqSorted(data.map((m) => m.administration_route)),
       extraClassifications: uniqSorted(
         data.map((m) => (m.metadata as { classification?: string } | null)?.classification)

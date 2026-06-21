@@ -1,0 +1,1 @@
+ALTER TABLE "module_vet_pharmacy_medications" ADD COLUMN "laboratory_id" uuid;
