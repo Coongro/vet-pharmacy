@@ -559,6 +559,10 @@ export function CreateMedicationButton({
       // storage_conditions no se incluye: el form no lo expone, así que omitirlo
       // evita pisar con null un valor cargado por otra vía al editar.
       metadata: {
+        // Preserva claves de metadata que el form no maneja (puestas por otra vía
+        // o una versión futura): el update hace replace, no merge, así que sin esto
+        // editar desde acá las borraría. Mismo criterio que storage_conditions.
+        ...(editMedication?.metadata ?? {}),
         ...(form.classification ? { classification: form.classification } : {}),
         ...(form.presType ? { presentationType: form.presType } : {}),
         ...(form.presUnit ? { presentationUnit: form.presUnit } : {}),
@@ -583,7 +587,7 @@ export function CreateMedicationButton({
     setSaving(true);
     try {
       // ── Modo edición: actualizar producto + medication, y reconciliar
-      // componentes (borrar los viejos por id + crear los del form). ──
+      // componentes. ──
       if (isEdit && editMedication && editProductId) {
         await actions.execute('products.items.update', {
           id: editProductId,
@@ -595,14 +599,20 @@ export function CreateMedicationButton({
           id: editMedication.id,
           data: medData,
         });
-        await Promise.all(
-          editOldComponentIds.map((id) =>
-            actions.execute('vet-pharmacy.medication-components.delete', { id })
-          )
-        );
+        // Reconciliación de componentes: crear los nuevos PRIMERO y recién después
+        // borrar los viejos por id. Estas acciones no son transaccionales entre sí;
+        // en este orden, un fallo a mitad deja componentes de más (recuperable,
+        // editable de nuevo) en vez de dejar el medicamento sin composición (data
+        // loss, que además el fallback de carga enmascararía). El fix de raíz sería
+        // una acción de reemplazo atómico en el backend (ticket aparte).
         await Promise.all(
           compData(editMedication.id).map((data) =>
             actions.execute('vet-pharmacy.medication-components.create', { data })
+          )
+        );
+        await Promise.all(
+          editOldComponentIds.map((id) =>
+            actions.execute('vet-pharmacy.medication-components.delete', { id })
           )
         );
         toast.success('Medicamento actualizado', `${name.trim()} fue actualizado`);

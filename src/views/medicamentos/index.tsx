@@ -222,6 +222,27 @@ export function MedicamentosView() {
     [ext]
   );
 
+  // Catálogo vivo: valores ya usados en el tenant para cada selector. Mismas
+  // opciones para alta y edición, derivadas una sola vez (evita recomputar en
+  // cada render y desincronizar las dos llamadas a CreateMedicationButton).
+  const catalogOptions = React.useMemo(
+    () => ({
+      paOptions: uniqSorted(data.map((m) => m.active_ingredient)),
+      labOptions: uniqSorted(data.map((m) => m.laboratory)),
+      extraRoutes: uniqSorted(data.map((m) => m.administration_route)),
+      extraClassifications: uniqSorted(
+        data.map((m) => (m.metadata as { classification?: string } | null)?.classification)
+      ),
+      extraPresTypes: uniqSorted(
+        data.map((m) => (m.metadata as { presentationType?: string } | null)?.presentationType)
+      ),
+      extraPresUnits: uniqSorted(
+        data.map((m) => (m.metadata as { presentationUnit?: string } | null)?.presentationUnit)
+      ),
+    }),
+    [data]
+  );
+
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return h(
@@ -238,19 +259,7 @@ export function MedicamentosView() {
         { className: 'flex items-center gap-2' },
         h(CreateMedicationButton, {
           onSuccess: () => void refetch(),
-          paOptions: uniqSorted(data.map((m) => m.active_ingredient)),
-          labOptions: uniqSorted(data.map((m) => m.laboratory)),
-          // Catálogo vivo: valores ya usados en el tenant para cada selector.
-          extraRoutes: uniqSorted(data.map((m) => m.administration_route)),
-          extraClassifications: uniqSorted(
-            data.map((m) => (m.metadata as { classification?: string } | null)?.classification)
-          ),
-          extraPresTypes: uniqSorted(
-            data.map((m) => (m.metadata as { presentationType?: string } | null)?.presentationType)
-          ),
-          extraPresUnits: uniqSorted(
-            data.map((m) => (m.metadata as { presentationUnit?: string } | null)?.presentationUnit)
-          ),
+          ...catalogOptions,
         })
       )
     ),
@@ -317,18 +326,7 @@ export function MedicamentosView() {
             void refetch();
             setEditTarget(null);
           },
-          paOptions: uniqSorted(data.map((m) => m.active_ingredient)),
-          labOptions: uniqSorted(data.map((m) => m.laboratory)),
-          extraRoutes: uniqSorted(data.map((m) => m.administration_route)),
-          extraClassifications: uniqSorted(
-            data.map((m) => (m.metadata as { classification?: string } | null)?.classification)
-          ),
-          extraPresTypes: uniqSorted(
-            data.map((m) => (m.metadata as { presentationType?: string } | null)?.presentationType)
-          ),
-          extraPresUnits: uniqSorted(
-            data.map((m) => (m.metadata as { presentationUnit?: string } | null)?.presentationUnit)
-          ),
+          ...catalogOptions,
         })
       : null
   );
