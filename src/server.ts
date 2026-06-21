@@ -9,3 +9,5 @@ export { MedicationRepository } from './repositories/medication.repository.js';
 export { PrescriptionRepository } from './repositories/prescription.repository.js';
 export { PrescriptionItemRepository } from './repositories/prescription-item.repository.js';
 export { ConsultationMedLinkRepository } from './repositories/consultation-med-link.repository.js';
+export * from './schema/medication-component.js';
+export { MedicationComponentRepository } from './repositories/medication-component.repository.js';

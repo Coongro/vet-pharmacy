@@ -6,6 +6,7 @@ export default defineConfig({
     './src/schema/prescription.ts',
     './src/schema/prescription-item.ts',
     './src/schema/consultation-med-link.ts',
+    './src/schema/medication-component.ts',
   ],
   out: './drizzle',
   dialect: 'postgresql',

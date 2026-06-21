@@ -1,3 +1,569 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===========================================================================
+   Medicamentos / Farmacia — CSS portado del diseño de Claude Design (COONG-218).
+   Solo lo que NO existe en el core: buscador de vademécum SENASA, composición
+   multi-principio, chips de especies, secciones del form y la tabla rediseñada.
+   Inputs, selects, botones, switches y badges usan componentes de @coongro/ui-components.
+
+   Tokens mapeados del diseño → host (cg-*), que adaptan dark mode solos:
+     --neutral-N → --cg-neutral-N · --gold* → --cg-gold* · --teal* → --cg-teal*
+     --red* → --cg-red* · --white → --cg-white · --font-sans → --cg-font-body
+     --shadow-pop → --cg-shadow-lg
+   Todo va scopeado bajo .vp-meds para no colisionar con otros plugins.
+   =========================================================================== */
+
+.vp-meds .mono {
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-feature-settings: 'tnum' 1;
+}
+
+.vp-meds .hint-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 2px 0;
+  font-size: 12px;
+  color: var(--cg-neutral-500);
+}
+.vp-meds .hint-row svg {
+  flex-shrink: 0;
+}
+
+/* ── Secciones del form (modal) ── */
+.vp-meds .form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.vp-meds .form-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 0.5px dashed var(--cg-neutral-300);
+}
+.vp-meds .form-section-head .step {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: var(--cg-gold-soft);
+  color: var(--cg-gold-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+.vp-meds .form-section-eyebrow {
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cg-neutral-700);
+}
+.vp-meds .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.vp-meds .label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.vp-meds .field-hint {
+  color: var(--cg-neutral-500);
+  font-size: 11.5px;
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+.vp-meds .field-err {
+  color: var(--cg-red-dk);
+  font-size: 11.5px;
+  margin: 6px 0 0;
+}
+
+/* ── Composición multi-principio ── */
+.vp-meds .comp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vp-meds .comp-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.vp-meds .comp-pa {
+  flex: 1;
+  min-width: 0;
+}
+.vp-meds .comp-conc {
+  width: 196px;
+  flex-shrink: 0;
+}
+.vp-meds .comp-count {
+  font-family: var(--cg-font-body);
+  font-size: 11px;
+  color: var(--cg-neutral-500);
+}
+.vp-meds .add-comp {
+  margin-top: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  font-size: 12.5px;
+  color: var(--cg-gold-deep);
+}
+.vp-meds .add-comp:hover {
+  text-decoration: underline;
+}
+
+/* ── Campo compound (valor + unidad lado a lado) ── */
+.vp-meds .compound {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.vp-meds .compound > *:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.vp-meds .compound .unit {
+  /* Ancho suficiente para "mg/ml" + "X" de limpiar + chevron sin cortarse. */
+  width: 132px;
+  flex-shrink: 0;
+}
+.vp-meds .pres-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.vp-meds .pres-row .pres-type {
+  flex: 1;
+  min-width: 0;
+}
+.vp-meds .pres-row .pres-size {
+  width: 92px;
+  flex-shrink: 0;
+}
+.vp-meds .pres-row .pres-unit {
+  /* Más ancho para que entre la unidad + la "X" de limpiar + el chevron sin
+     cortarse (antes 96px mostraba "m…"). El tipo (flex:1) cede el espacio. */
+  width: 124px;
+  flex-shrink: 0;
+}
+
+/* ── Chips de especies / conservación ── */
+.vp-meds .chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.vp-meds .chip-pick {
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  font-size: 12.5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0.5px solid var(--cg-neutral-300);
+  background: var(--cg-white);
+  color: var(--cg-neutral-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition:
+    background 110ms,
+    color 110ms,
+    border-color 110ms;
+  white-space: nowrap;
+}
+.vp-meds .chip-pick:hover {
+  background: var(--cg-neutral-100);
+}
+.vp-meds .chip-pick.on {
+  background: var(--cg-gold-soft);
+  color: var(--cg-gold-deep);
+  border-color: var(--cg-gold-lt);
+  font-weight: 600;
+}
+
+/* ── Caja de switch (la fila; el toggle usa UI.Switch) ── */
+.vp-meds .switch-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 0.5px solid var(--cg-neutral-300);
+  border-radius: 10px;
+  background: var(--cg-neutral-100);
+}
+.vp-meds .switch-row .sw-text {
+  flex: 1;
+  min-width: 0;
+}
+.vp-meds .switch-row .sw-label {
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--cg-neutral-950);
+}
+.vp-meds .switch-row .sw-hint {
+  font-family: var(--cg-font-body);
+  font-size: 11.5px;
+  color: var(--cg-neutral-700);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+.vp-meds .switch-row.locked-on {
+  background: var(--cg-gold-soft);
+  border-color: var(--cg-gold-lt);
+}
+.vp-meds .lock-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-family: var(--cg-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--cg-gold-deep);
+}
+
+/* ── Buscador de vademécum SENASA ── */
+.vp-meds .sena-bar {
+  margin-bottom: 2px;
+}
+.vp-meds .sena-search-wrap {
+  position: relative;
+  background: var(--cg-neutral-100);
+  border: 0.5px solid var(--cg-neutral-300);
+  border-radius: 12px;
+  padding: 16px;
+}
+.vp-meds .sena-head {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.vp-meds .sena-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  background: var(--cg-neutral-950);
+  color: var(--cg-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vp-meds .sena-title {
+  font-family: var(--cg-font-body);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--cg-neutral-950);
+  letter-spacing: -0.2px;
+}
+.vp-meds .sena-sub {
+  font-family: var(--cg-font-body);
+  font-size: 11.5px;
+  color: var(--cg-neutral-700);
+  margin-top: 2px;
+  line-height: 1.45;
+}
+.vp-meds .sena-input-wrap {
+  position: relative;
+}
+.vp-meds .sena-input-wrap .search-ico {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--cg-neutral-500);
+  pointer-events: none;
+  display: inline-flex;
+  z-index: 1;
+}
+.vp-meds .sena-menu {
+  margin-top: 6px;
+  background: var(--cg-white);
+  border: 0.5px solid var(--cg-neutral-300);
+  border-radius: 10px;
+  box-shadow: var(--cg-shadow-lg);
+  overflow: hidden;
+  max-height: 252px;
+  overflow-y: auto;
+}
+.vp-meds .sena-opt {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 13px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+.vp-meds .sena-opt:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 0;
+  height: 0.5px;
+  background: var(--cg-neutral-200);
+}
+.vp-meds .sena-opt:hover {
+  background: var(--cg-neutral-100);
+}
+.vp-meds .sena-opt-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--cg-neutral-200);
+  color: var(--cg-neutral-700);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vp-meds .sena-opt-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.vp-meds .sena-opt-name {
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--cg-neutral-950);
+}
+.vp-meds .sena-opt-meta {
+  font-family: var(--cg-font-body);
+  font-size: 11.5px;
+  color: var(--cg-neutral-700);
+  margin-top: 1px;
+}
+.vp-meds .sena-opt-reg {
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 11px;
+  color: var(--cg-neutral-500);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vp-meds .sena-loading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 13px;
+  font-size: 12.5px;
+  color: var(--cg-neutral-700);
+}
+.vp-meds .spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--cg-neutral-300);
+  border-top-color: var(--cg-neutral-950);
+  animation: vp-spin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+@keyframes vp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.vp-meds .sena-empty {
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 11px;
+}
+.vp-meds .sena-empty-t {
+  font-family: var(--cg-font-body);
+  font-size: 13px;
+  color: var(--cg-neutral-950);
+  font-weight: 500;
+}
+.vp-meds .sena-manual-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 9px 0 0;
+  font-size: 11.5px;
+  color: var(--cg-neutral-700);
+  text-decoration: underline;
+  font-family: var(--cg-font-body);
+}
+.vp-meds .sena-manual-link:hover {
+  color: var(--cg-neutral-950);
+}
+.vp-meds .sena-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--cg-neutral-100);
+  border: 0.5px dashed var(--cg-neutral-300);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 12px;
+  color: var(--cg-neutral-700);
+}
+.vp-meds .sena-collapsed > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.vp-meds .sena-selected {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--cg-teal-soft);
+  border: 0.5px solid var(--cg-teal-lt);
+  border-radius: 12px;
+  padding: 13px 15px;
+}
+.vp-meds .sena-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--cg-teal-dk);
+  color: var(--cg-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vp-meds .sena-sel-text {
+  min-width: 0;
+  flex: 1;
+}
+.vp-meds .sena-sel-name {
+  font-family: var(--cg-font-body);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--cg-teal-deep);
+}
+.vp-meds .sena-sel-meta {
+  font-family: var(--cg-font-body);
+  font-size: 11.5px;
+  color: var(--cg-teal-dk);
+  margin-top: 1px;
+}
+.vp-meds .sena-change {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11.5px;
+  color: var(--cg-teal-deep);
+  text-decoration: underline;
+  font-family: var(--cg-font-body);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Badges/tags de procedencia y pendientes ── */
+.vp-meds .sena-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--cg-font-body);
+  font-weight: 600;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--cg-teal-deep);
+  background: var(--cg-teal-soft);
+  border-radius: 3px;
+  padding: 2px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.vp-meds .sena-tag svg {
+  width: 9px;
+  height: 9px;
+}
+.vp-meds .sena-legend {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--cg-font-body);
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--cg-teal-deep);
+  background: var(--cg-teal-soft);
+  border-radius: 5px;
+  padding: 3px 8px;
+}
+.vp-meds .pending-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--cg-font-body);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--cg-gold-deep);
+  background: var(--cg-gold-soft);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.vp-meds .form-section-head .pending-tag,
+.vp-meds .form-section-head .sena-legend {
+  margin-left: auto;
+}
+.vp-meds .pending-note {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  margin: 0;
+  padding: 11px 13px;
+  background: var(--cg-gold-soft);
+  border-radius: 9px;
+  font-family: var(--cg-font-body);
+  font-size: 11.5px;
+  color: var(--cg-gold-deep);
+  line-height: 1.45;
+}
+.vp-meds .pending-note svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@media (max-width: 560px) {
+  .vp-meds .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .vp-meds .sena-selected {
+    flex-wrap: wrap;
+  }
+  .vp-meds .comp-conc {
+    width: 172px;
+  }
+}

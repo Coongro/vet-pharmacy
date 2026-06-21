@@ -4,7 +4,12 @@ import { boolean, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-c
 export const medicationTable = pgTable('module_vet_pharmacy_medications', {
   id: uuid('id').primaryKey().notNull(),
   product_id: text('product_id').notNull(),
-  active_ingredient: text('active_ingredient').notNull(),
+  /**
+   * @deprecated La composición ahora vive en `medication_components` (lista de
+   * principios activos, soporta combinados). Se mantiene nullable por
+   * compatibilidad con datos previos; el alta nueva escribe los componentes.
+   */
+  active_ingredient: text('active_ingredient'),
   concentration: text('concentration'),
   presentation: text('presentation'),
   laboratory: text('laboratory'),
