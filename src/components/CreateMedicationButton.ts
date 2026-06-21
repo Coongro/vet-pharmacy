@@ -61,6 +61,8 @@ interface CatalogSummary {
   registrationNumber: string;
   commercialName: string;
   laboratory?: string;
+  /** País de la fuente (ISO, ej. "AR") — para materializar el lab con su país. */
+  country?: string;
   /** Especies destino — el search las completa al clasificar por tipo. */
   species?: string[];
 }
@@ -71,6 +73,8 @@ interface CatalogComposition {
   rawStrength?: string;
 }
 interface CatalogDetail extends CatalogSummary {
+  /** CUIT / tax id del laboratorio titular, si la fuente lo expone. */
+  laboratoryTaxId?: string;
   composition: CatalogComposition[];
   administrationRoutes: string[];
   species: string[];
@@ -218,17 +222,22 @@ export function CreateMedicationButton({
   // Upsert del laboratorio por nombre en el maestro y devuelve su id. Aislado del
   // handler de autofill para no anidar try/if de más (max-depth). Si vademecum no
   // está disponible, devuelve null y el lab se elige manualmente.
-  const resolveLabId = useCallback(async (name: string): Promise<string | null> => {
-    try {
-      const lab = await actions.execute<{ id: string }>('vademecum.laboratories.ensureByName', {
-        name,
-        source: 'senasa',
-      });
-      return lab?.id ?? null;
-    } catch {
-      return null;
-    }
-  }, []);
+  const resolveLabId = useCallback(
+    async (name: string, taxId?: string, country?: string): Promise<string | null> => {
+      try {
+        const lab = await actions.execute<{ id: string }>('vademecum.laboratories.ensureByName', {
+          name,
+          taxId,
+          country,
+          source: 'senasa',
+        });
+        return lab?.id ?? null;
+      } catch {
+        return null;
+      }
+    },
+    []
+  );
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [name, setName] = useState('');
@@ -548,7 +557,9 @@ export function CreateMedicationButton({
         // Auto-upsert del laboratorio en el maestro compartido (COONG-219): el
         // autofill trae el nombre de la firma; se materializa una sola vez en el
         // maestro y se referencia por id (ver resolveLabId).
-        const labId = detail.laboratory ? await resolveLabId(detail.laboratory) : null;
+        const labId = detail.laboratory
+          ? await resolveLabId(detail.laboratory, detail.laboratoryTaxId, detail.country)
+          : null;
         if (labId) setForm((prev) => ({ ...prev, laboratory_id: labId }));
       } catch (err) {
         toast.error('Error', err instanceof Error ? err.message : 'No se pudo traer el detalle');

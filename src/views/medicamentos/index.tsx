@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 import { getHostReact, getHostUI, actions } from '@coongro/plugin-sdk';
+import { useLaboratories } from '@coongro/vademecum';
 
 import { CreateMedicationButton } from '../../components/CreateMedicationButton.js';
 import { ExpirationBadge } from '../../components/ExpirationBadge.js';
@@ -26,6 +27,14 @@ function uniqSorted(vals: Array<string | null | undefined>): string[] {
 export function MedicamentosView() {
   const { data, loading, filters: _filters, setFilters, refetch } = useMedications();
   const detection = useDetectTextMedications();
+  // Nombre del laboratorio resuelto del maestro compartido (vademecum) por id,
+  // con fallback al texto denormalizado para datos aún sin migrar (COONG-219).
+  const { laboratories } = useLaboratories();
+  const labNameById = React.useMemo(() => {
+    const map = new Map<string, string>();
+    for (const lab of laboratories) map.set(lab.id, lab.name);
+    return map;
+  }, [laboratories]);
 
   // Enriquecimiento: precio (del producto) + stock y vencimiento (de los lotes activos), para
   // que la Farmacia muestre de un vistazo lo que un vet necesita: qué tiene y qué se vence.
@@ -138,7 +147,11 @@ export function MedicamentosView() {
           h(
             'div',
             { className: 'flex flex-col gap-1 items-start' },
-            h('span', { className: 'text-sm' }, m.laboratory || '—'),
+            h(
+              'span',
+              { className: 'text-sm' },
+              labNameById.get(m.laboratory_id ?? '') || m.laboratory || '—'
+            ),
             m.administration_route
               ? h(UI.Badge, { variant: 'secondary' } as any, m.administration_route)
               : null
@@ -219,7 +232,7 @@ export function MedicamentosView() {
         },
       },
     ],
-    [ext]
+    [ext, labNameById]
   );
 
   // Catálogo vivo: valores ya usados en el tenant para cada selector. Mismas
