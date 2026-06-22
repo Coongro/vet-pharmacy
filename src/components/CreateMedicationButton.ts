@@ -16,6 +16,7 @@
  * @coongro/ui-components; el CSS propio del diseño vive en tailwind.css (.vp-meds).
  */
 import { getHostReact, getHostUI, actions, usePlugin, useSettings } from '@coongro/plugin-sdk';
+import { LaboratorySelect, useLaboratories } from '@coongro/vademecum';
 
 import {
   SPECIES,
@@ -27,7 +28,7 @@ import type { Medication } from '../types/domain.js';
 
 const React = getHostReact();
 const UI = getHostUI();
-const { useState, useCallback, useEffect, useRef } = React;
+const { useState, useCallback, useEffect, useRef, useMemo } = React;
 const h = React.createElement;
 
 // ─── Catálogos (del diseño) ──────────────────────────────────────────────────
@@ -60,6 +61,8 @@ interface CatalogSummary {
   registrationNumber: string;
   commercialName: string;
   laboratory?: string;
+  /** País de la fuente (ISO, ej. "AR") — para materializar el lab con su país. */
+  country?: string;
   /** Especies destino — el search las completa al clasificar por tipo. */
   species?: string[];
 }
@@ -70,6 +73,8 @@ interface CatalogComposition {
   rawStrength?: string;
 }
 interface CatalogDetail extends CatalogSummary {
+  /** CUIT / tax id del laboratorio titular, si la fuente lo expone. */
+  laboratoryTaxId?: string;
   composition: CatalogComposition[];
   administrationRoutes: string[];
   species: string[];
@@ -97,7 +102,7 @@ interface FormState {
   presSize: string;
   presUnit: string;
   classification: string;
-  laboratory: string;
+  laboratory_id: string;
   administration_route: string;
   species: string[];
   indications: string;
@@ -113,7 +118,7 @@ const EMPTY_FORM: FormState = {
   presSize: '',
   presUnit: 'ml',
   classification: '',
-  laboratory: '',
+  laboratory_id: '',
   administration_route: '',
   species: [],
   indications: '',
@@ -139,7 +144,6 @@ interface CreateMedicationButtonProps {
    * los medicamentos existentes.
    */
   paOptions?: string[];
-  labOptions?: string[];
   extraRoutes?: string[];
   extraClassifications?: string[];
   extraPresTypes?: string[];
@@ -185,7 +189,6 @@ export function CreateMedicationButton({
   editMedication = null,
   onEditClose,
   paOptions = [],
-  labOptions = [],
   extraRoutes = [],
   extraClassifications = [],
   extraPresTypes = [],
@@ -208,6 +211,33 @@ export function CreateMedicationButton({
     return SPECIES_ENABLED_DEFAULT[s.code];
   });
   const { toast } = usePlugin();
+  // Maestro de laboratorios compartido (vademecum): el nombre se resuelve por id
+  // para denormalizarlo en el medicamento al guardar (COONG-219).
+  const { laboratories, refetch: refetchLabs } = useLaboratories();
+  const labNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const lab of laboratories) map.set(lab.id, lab.name);
+    return map;
+  }, [laboratories]);
+  // Upsert del laboratorio por nombre en el maestro y devuelve su id. Aislado del
+  // handler de autofill para no anidar try/if de más (max-depth). Si vademecum no
+  // está disponible, devuelve null y el lab se elige manualmente.
+  const resolveLabId = useCallback(
+    async (name: string, taxId?: string, country?: string): Promise<string | null> => {
+      try {
+        const lab = await actions.execute<{ id: string }>('vademecum.laboratories.ensureByName', {
+          name,
+          taxId,
+          country,
+          source: 'senasa',
+        });
+        return lab?.id ?? null;
+      } catch {
+        return null;
+      }
+    },
+    []
+  );
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [name, setName] = useState('');
@@ -315,7 +345,7 @@ export function CreateMedicationButton({
         presSize: meta.presentationSize ?? '',
         presUnit: meta.presentationUnit ?? 'ml',
         classification: meta.classification ?? '',
-        laboratory: editMedication.laboratory ?? '',
+        laboratory_id: editMedication.laboratory_id ?? '',
         administration_route: editMedication.administration_route ?? '',
         species: Array.isArray(editMedication.species) ? editMedication.species : [],
         indications: meta.indications ?? '',
@@ -328,6 +358,22 @@ export function CreateMedicationButton({
       setNameDirty(true);
       setSenaSelected(null);
       setSenaCollapsed(true);
+
+      // Auto-migración del laboratorio en texto libre (datos previos a COONG-219):
+      // si el medicamento tiene `laboratory` (texto) pero no `laboratory_id`, se
+      // materializa en el maestro compartido y se prefilla el id, para que el
+      // selector lo muestre y al guardar quede referenciado. Idempotente
+      // (ensureByName deduplica). Sin esto, el form mostraría el lab vacío.
+      if (!editMedication.laboratory_id && editMedication.laboratory?.trim()) {
+        try {
+          const lab = await actions.execute<{ id: string }>('vademecum.laboratories.ensureByName', {
+            name: editMedication.laboratory,
+          });
+          if (active && lab?.id) setForm((prev) => ({ ...prev, laboratory_id: lab.id }));
+        } catch {
+          /* el vet puede elegir el laboratorio manualmente */
+        }
+      }
     })();
     return () => {
       active = false;
@@ -505,7 +551,6 @@ export function CreateMedicationButton({
         setForm((prev) => ({
           ...prev,
           components: comps,
-          laboratory: detail.laboratory ?? '',
           administration_route: route,
           presType,
           presSize,
@@ -524,13 +569,26 @@ export function CreateMedicationButton({
         setNameDirty(true);
         setSenaSelected(detail);
         setSenaQuery('');
+
+        // Auto-upsert del laboratorio en el maestro compartido (COONG-219): el
+        // autofill trae el nombre de la firma; se materializa una sola vez en el
+        // maestro y se referencia por id (ver resolveLabId).
+        const labId = detail.laboratory
+          ? await resolveLabId(detail.laboratory, detail.laboratoryTaxId, detail.country)
+          : null;
+        if (labId) {
+          setForm((prev) => ({ ...prev, laboratory_id: labId }));
+          // Refrescar el maestro local para que el nombre denormalizado que se
+          // guarda (labNameById) incluya el lab recién creado por el autofill.
+          await refetchLabs();
+        }
       } catch (err) {
         toast.error('Error', err instanceof Error ? err.message : 'No se pudo traer el detalle');
       } finally {
         setSenaLoading(false);
       }
     },
-    [toast]
+    [toast, resolveLabId, refetchLabs]
   );
 
   const handleSubmit = useCallback(async () => {
@@ -550,7 +608,8 @@ export function CreateMedicationButton({
       active_ingredient: comps[0].substance,
       concentration: comps[0].concVal.trim() ? `${comps[0].concVal}${comps[0].concUnit}` : null,
       presentation: presString(form) || null,
-      laboratory: form.laboratory.trim() || null,
+      laboratory_id: form.laboratory_id || null,
+      laboratory: form.laboratory_id ? (labNameById.get(form.laboratory_id) ?? null) : null,
       administration_route: form.administration_route || null,
       species: form.species.length ? form.species : null,
       requires_prescription: form.requires_prescription,
@@ -1083,7 +1142,10 @@ export function CreateMedicationButton({
               'div',
               null,
               h(UI.Label, null, 'Laboratorio', senaTag()),
-              combo(form.laboratory, (v) => update('laboratory', v), labOptions, 'Elegí o creá uno')
+              h(LaboratorySelect, {
+                value: form.laboratory_id,
+                onValueChange: (v: string) => update('laboratory_id', v),
+              })
             ),
             h(
               'div',
