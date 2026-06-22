@@ -39,7 +39,10 @@ export function MedicamentosView() {
   // Enriquecimiento: precio (del producto) + stock y vencimiento (de los lotes activos), para
   // que la Farmacia muestre de un vistazo lo que un vet necesita: qué tiene y qué se vence.
   const [ext, setExt] = useState<
-    Record<string, { price: string | null; stock: number; expiry: string | null }>
+    Record<
+      string,
+      { price: string | null; stock: number; expiry: string | null; name: string | null }
+    >
   >({});
   useEffect(() => {
     let active = true;
@@ -47,8 +50,12 @@ export function MedicamentosView() {
       try {
         const [products, batches] = await Promise.all([
           actions
-            .execute<Array<{ id: string; sale_price: string | null }>>('products.items.list')
-            .catch(() => [] as Array<{ id: string; sale_price: string | null }>),
+            .execute<
+              Array<{ id: string; name: string | null; sale_price: string | null }>
+            >('products.items.list')
+            .catch(
+              () => [] as Array<{ id: string; name: string | null; sale_price: string | null }>
+            ),
           actions
             .execute<
               Array<{
@@ -68,12 +75,15 @@ export function MedicamentosView() {
                 }>
             ),
         ]);
-        const map: Record<string, { price: string | null; stock: number; expiry: string | null }> =
-          {};
-        for (const p of products ?? []) map[p.id] = { price: p.sale_price, stock: 0, expiry: null };
+        const map: Record<
+          string,
+          { price: string | null; stock: number; expiry: string | null; name: string | null }
+        > = {};
+        for (const p of products ?? [])
+          map[p.id] = { price: p.sale_price, stock: 0, expiry: null, name: p.name };
         for (const b of batches ?? []) {
           if (b.status !== 'active') continue;
-          const e = map[b.product_id] ?? { price: null, stock: 0, expiry: null };
+          const e = map[b.product_id] ?? { price: null, stock: 0, expiry: null, name: null };
           e.stock += Number(b.quantity) || 0;
           if (!e.expiry || b.expiration_date < e.expiry) e.expiry = b.expiration_date;
           map[b.product_id] = e;
@@ -130,15 +140,23 @@ export function MedicamentosView() {
       {
         key: 'medicamento',
         header: 'Medicamento',
-        render: (m: Medication) =>
-          h(
+        render: (m: Medication) => {
+          // Primario: el nombre comercial del producto (lo que cargó el vet / vino
+          // de SENASA). El principio activo + concentración van de subtítulo. Antes
+          // se mostraba el principio activo como título, ocultando el nombre real.
+          const name = ext[m.product_id]?.name || m.active_ingredient;
+          const subParts: string[] = [];
+          if (m.active_ingredient && m.active_ingredient !== name)
+            subParts.push(m.active_ingredient);
+          if (m.concentration) subParts.push(m.concentration);
+          const sub = subParts.join(' · ');
+          return h(
             'div',
             null,
-            h('div', { className: 'font-medium text-cg-text' }, m.active_ingredient),
-            m.concentration
-              ? h('div', { className: 'text-xs text-cg-text-muted mt-0.5' }, m.concentration)
-              : null
-          ),
+            h('div', { className: 'font-medium text-cg-text' }, name),
+            sub ? h('div', { className: 'text-xs text-cg-text-muted mt-0.5' }, sub) : null
+          );
+        },
       },
       {
         key: 'lab',

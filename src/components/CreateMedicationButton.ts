@@ -213,7 +213,7 @@ export function CreateMedicationButton({
   const { toast } = usePlugin();
   // Maestro de laboratorios compartido (vademecum): el nombre se resuelve por id
   // para denormalizarlo en el medicamento al guardar (COONG-219).
-  const { laboratories } = useLaboratories();
+  const { laboratories, refetch: refetchLabs } = useLaboratories();
   const labNameById = useMemo(() => {
     const map = new Map<string, string>();
     for (const lab of laboratories) map.set(lab.id, lab.name);
@@ -358,6 +358,22 @@ export function CreateMedicationButton({
       setNameDirty(true);
       setSenaSelected(null);
       setSenaCollapsed(true);
+
+      // Auto-migración del laboratorio en texto libre (datos previos a COONG-219):
+      // si el medicamento tiene `laboratory` (texto) pero no `laboratory_id`, se
+      // materializa en el maestro compartido y se prefilla el id, para que el
+      // selector lo muestre y al guardar quede referenciado. Idempotente
+      // (ensureByName deduplica). Sin esto, el form mostraría el lab vacío.
+      if (!editMedication.laboratory_id && editMedication.laboratory?.trim()) {
+        try {
+          const lab = await actions.execute<{ id: string }>('vademecum.laboratories.ensureByName', {
+            name: editMedication.laboratory,
+          });
+          if (active && lab?.id) setForm((prev) => ({ ...prev, laboratory_id: lab.id }));
+        } catch {
+          /* el vet puede elegir el laboratorio manualmente */
+        }
+      }
     })();
     return () => {
       active = false;
@@ -560,14 +576,19 @@ export function CreateMedicationButton({
         const labId = detail.laboratory
           ? await resolveLabId(detail.laboratory, detail.laboratoryTaxId, detail.country)
           : null;
-        if (labId) setForm((prev) => ({ ...prev, laboratory_id: labId }));
+        if (labId) {
+          setForm((prev) => ({ ...prev, laboratory_id: labId }));
+          // Refrescar el maestro local para que el nombre denormalizado que se
+          // guarda (labNameById) incluya el lab recién creado por el autofill.
+          await refetchLabs();
+        }
       } catch (err) {
         toast.error('Error', err instanceof Error ? err.message : 'No se pudo traer el detalle');
       } finally {
         setSenaLoading(false);
       }
     },
-    [toast]
+    [toast, resolveLabId, refetchLabs]
   );
 
   const handleSubmit = useCallback(async () => {
