@@ -2,17 +2,16 @@
  * Comando: getDispensationPreview
  *
  * Dado un prescriptionId, retorna los items con sus lotes FIFO disponibles.
- * Usa FIFOStockService.preview() — solo lectura, no modifica stock.
+ * Usa products.batches.previewConsume (motor de lotes) — solo lectura, no modifica stock.
  */
+import { actions } from '@coongro/plugin-sdk';
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 
 import { PrescriptionItemRepository } from '../repositories/prescription-item.repository.js';
-import { FIFOStockService } from '../services/fifo-stock.service.js';
-import type { ItemPreview, DispensationPreview } from '../types/domain.js';
+import type { ItemPreview, DispensationPreview, BatchPreview } from '../types/domain.js';
 
 export function createGetDispensationPreview(db: ModuleDatabaseAPI) {
   const itemRepo = new PrescriptionItemRepository(db);
-  const fifo = new FIFOStockService();
 
   return async (args: unknown): Promise<DispensationPreview> => {
     const { prescriptionId } = args as { prescriptionId: string };
@@ -35,7 +34,12 @@ export function createGetDispensationPreview(db: ModuleDatabaseAPI) {
         continue;
       }
 
-      const batches = await fifo.preview(item.product_id, needed);
+      // Preview FIFO del motor unificado (products): solo lectura, no modifica stock.
+      const batches =
+        (await actions.execute<BatchPreview[]>('products.batches.previewConsume', {
+          productId: item.product_id,
+          quantity: needed,
+        })) ?? [];
       const totalAvailable = batches.reduce((sum, b) => sum + b.toConsume, 0);
 
       itemPreviews.push({
