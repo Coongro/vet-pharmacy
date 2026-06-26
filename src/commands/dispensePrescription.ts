@@ -1,18 +1,25 @@
 /**
  * Comando: dispensePrescription
  *
- * Deducción FIFO atómica server-side.
- * Usa FIFOStockService.consume() y la máquina de estados para validar transiciones.
+ * Deducción FIFO server-side vía el motor de lotes de products
+ * (products.batches.consume) + la máquina de estados para validar transiciones.
  * Soporta dispensación parcial: si no hay stock suficiente, dispensa lo disponible
  * y marca como 'partially_dispensed'.
  */
+import { actions } from '@coongro/plugin-sdk';
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 
 import { PrescriptionItemRepository } from '../repositories/prescription-item.repository.js';
 import { PrescriptionRepository } from '../repositories/prescription.repository.js';
-import { FIFOStockService } from '../services/fifo-stock.service.js';
 import { canTransition } from '../services/prescription-state-machine.js';
 import type { DispenseResult, PrescriptionStatus } from '../types/domain.js';
+
+/** Resultado del motor de lotes de products (products.batches.consume). */
+interface ConsumeResult {
+  consumed: number;
+  batches: unknown[];
+  shortfall: number;
+}
 
 export function createDispensePrescription(
   db: ModuleDatabaseAPI,
@@ -20,7 +27,6 @@ export function createDispensePrescription(
 ) {
   const prescriptionRepo = new PrescriptionRepository(db);
   const itemRepo = new PrescriptionItemRepository(db);
-  const fifo = new FIFOStockService();
 
   return async (args: unknown): Promise<DispenseResult> => {
     const { prescriptionId, autoDeductStock = true } = args as {
@@ -58,8 +64,16 @@ export function createDispensePrescription(
           continue;
         }
 
-        const { consumed, batchesModified } = await fifo.consume(item.product_id, needed);
-        totalBatchesModified += batchesModified;
+        // Motor de lotes unificado (products): descuento FIFO por vencimiento +
+        // movimiento con trazabilidad (lote → esta receta). Reemplaza al FIFO propio.
+        const result = await actions.execute<ConsumeResult>('products.batches.consume', {
+          productId: item.product_id,
+          quantity: needed,
+          referenceType: 'prescription',
+          referenceId: prescriptionId,
+        });
+        const consumed = result?.consumed ?? 0;
+        totalBatchesModified += result?.batches?.length ?? 0;
 
         const newDispensed = parseFloat(item.dispensed_quantity) + consumed;
         await itemRepo.update({

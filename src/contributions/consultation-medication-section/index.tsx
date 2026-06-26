@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 import { getHostReact, getHostUI, actions, events, usePlugin } from '@coongro/plugin-sdk';
+import { BatchPicker } from '@coongro/products';
 
 import { AutocompleteInput } from '../../components/AutocompleteInput.js';
 import { chargeConsultationMedications } from '../../data/billing.js';
@@ -16,12 +17,6 @@ interface PendingLink {
   name: string;
   medicationId: string;
   productId: string;
-}
-
-/** dd/mm/aaaa a partir de un ISO; tolera vacío. */
-function fmtExp(iso: string): string {
-  const d = (iso ?? '').slice(0, 10).split('-');
-  return d.length === 3 ? `${d[2]}/${d[1]}/${d[0]}` : '';
 }
 
 /**
@@ -228,20 +223,21 @@ export function ConsultationMedicationSection(props: Record<string, unknown>) {
             })),
           });
 
-          // Descontar el lote elegido por cada medicamento (parida con vacunas).
+          // Descontar el lote elegido por cada medicamento vía el motor de lotes
+          // unificado (products): mismo consume que usan vacunas y recetas, con
+          // trazabilidad (lote → esta consulta). Best-effort: si falla, el cobro
+          // ya quedó registrado.
           for (const m of meds) {
             const batchId = loteByMedIdRef.current[m.id];
             if (!batchId) continue;
-            const batch = (batchesByProductRef.current[m.product_id] ?? []).find(
-              (b) => b.id === batchId
-            );
-            if (!batch) continue;
             const dispensed = Number(qtyByIdRef.current[m.id] || '1') || 1;
-            const next = Math.max(0, (Number(batch.quantity) || 0) - dispensed);
             try {
-              await actions.execute('products.batches.update', {
-                id: batchId,
-                data: { quantity: String(next) },
+              await actions.execute('products.batches.consume', {
+                productId: m.product_id,
+                quantity: dispensed,
+                batchId,
+                referenceType: 'consultation_medication',
+                referenceId: consultationId ?? undefined,
               });
             } catch {
               /* el descuento de stock es best-effort; el cobro ya quedó registrado */
@@ -299,28 +295,24 @@ export function ConsultationMedicationSection(props: Record<string, unknown>) {
                 { className: 'flex-1 text-[13px] text-cg-text min-w-0 truncate' },
                 med.active_ingredient + (med.concentration ? ` ${med.concentration}` : '')
               ),
-              // Selector de lote (si el medicamento tiene lotes con stock).
+              // Selector de lote reusable (motor de lotes de products) — mismo
+              // componente y preselección FIFO que usan vacunas y recetas.
               batches.length > 0 &&
                 h(
                   'div',
                   { className: 'w-44' },
-                  h(
-                    UI.Select,
-                    {
-                      value: loteByMedId[med.id] ?? '',
-                      onValueChange: (v: string) => setLote(med.id, v),
-                      placeholder: 'Lote…',
-                      size: 'sm',
-                      'aria-label': 'Lote',
-                    } as any,
-                    ...batches.map((b) =>
-                      h(
-                        UI.SelectItem,
-                        { key: b.id, value: b.id } as any,
-                        `${b.batch_number} · vence ${fmtExp(b.expiration_date)}`
-                      )
-                    )
-                  )
+                  h(BatchPicker, {
+                    batches: batches.map((b) => ({
+                      id: b.id,
+                      batchNumber: b.batch_number,
+                      expirationDate: b.expiration_date ?? '',
+                      quantity: Number(b.quantity) || 0,
+                    })),
+                    value: loteByMedId[med.id] ?? '',
+                    onChange: (v: string) => setLote(med.id, v),
+                    placeholder: 'Lote…',
+                    size: 'sm',
+                  })
                 ),
               h(
                 'div',
