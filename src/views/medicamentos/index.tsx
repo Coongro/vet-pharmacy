@@ -41,7 +41,12 @@ export function MedicamentosView() {
   const [ext, setExt] = useState<
     Record<
       string,
-      { price: string | null; stock: number; expiry: string | null; name: string | null }
+      {
+        price: string | null;
+        cost: string | null;
+        expiry: string | null;
+        name: string | null;
+      }
     >
   >({});
   useEffect(() => {
@@ -51,10 +56,21 @@ export function MedicamentosView() {
         const [products, batches] = await Promise.all([
           actions
             .execute<
-              Array<{ id: string; name: string | null; sale_price: string | null }>
+              Array<{
+                id: string;
+                name: string | null;
+                sale_price: string | null;
+                purchase_price: string | null;
+              }>
             >('products.items.list')
             .catch(
-              () => [] as Array<{ id: string; name: string | null; sale_price: string | null }>
+              () =>
+                [] as Array<{
+                  id: string;
+                  name: string | null;
+                  sale_price: string | null;
+                  purchase_price: string | null;
+                }>
             ),
           actions
             .execute<
@@ -77,14 +93,28 @@ export function MedicamentosView() {
         ]);
         const map: Record<
           string,
-          { price: string | null; stock: number; expiry: string | null; name: string | null }
+          {
+            price: string | null;
+            cost: string | null;
+            expiry: string | null;
+            name: string | null;
+          }
         > = {};
         for (const p of products ?? [])
-          map[p.id] = { price: p.sale_price, stock: 0, expiry: null, name: p.name };
+          map[p.id] = {
+            price: p.sale_price,
+            cost: p.purchase_price,
+            expiry: null,
+            name: p.name,
+          };
         for (const b of batches ?? []) {
           if (b.status !== 'active') continue;
-          const e = map[b.product_id] ?? { price: null, stock: 0, expiry: null, name: null };
-          e.stock += Number(b.quantity) || 0;
+          const e = map[b.product_id] ?? {
+            price: null,
+            cost: null,
+            expiry: null,
+            name: null,
+          };
           if (!e.expiry || b.expiration_date < e.expiry) e.expiry = b.expiration_date;
           map[b.product_id] = e;
         }
@@ -171,7 +201,7 @@ export function MedicamentosView() {
               labNameById.get(m.laboratory_id ?? '') || m.laboratory || '—'
             ),
             m.administration_route
-              ? h(UI.Badge, { variant: 'secondary' } as any, m.administration_route)
+              ? h(UI.Badge, { variant: 'outline' } as any, m.administration_route)
               : null
           ),
       },
@@ -187,7 +217,7 @@ export function MedicamentosView() {
             ...list.map((code) =>
               h(
                 UI.Badge,
-                { key: code, variant: 'secondary' } as any,
+                { key: code, variant: 'info' } as any,
                 h(UI.DynamicIcon, { icon: SPECIES_ICON[code] ?? 'PawPrint', size: 11 } as any),
                 h('span', { className: 'ml-1' }, SPECIES_LABEL[code] ?? code)
               )
@@ -204,7 +234,7 @@ export function MedicamentosView() {
             { className: 'flex flex-col gap-1 items-start' },
             h(
               UI.Badge,
-              { variant: m.requires_prescription ? 'orange' : 'secondary' } as any,
+              { variant: m.requires_prescription ? 'warning-soft' : 'secondary' } as any,
               m.requires_prescription ? 'Receta · Sí' : 'Receta · No'
             ),
             h(
@@ -215,17 +245,6 @@ export function MedicamentosView() {
           ),
       },
       {
-        key: 'stock',
-        header: 'Stock',
-        render: (m: Medication) => {
-          const e = ext[m.product_id];
-          const stock = e?.stock ?? 0;
-          return stock > 0
-            ? h('span', { className: 'font-mono font-semibold' }, `${stock} u.`)
-            : h(UI.Badge, { variant: 'danger-soft' } as any, 'Sin stock');
-        },
-      },
-      {
         key: 'vence',
         header: 'Vence',
         render: (m: Medication) => {
@@ -233,6 +252,19 @@ export function MedicamentosView() {
           return e?.expiry
             ? h(ExpirationBadge, { expirationDate: e.expiry })
             : h('span', { className: 'text-cg-text-muted' }, '—');
+        },
+      },
+      {
+        key: 'costo',
+        header: 'Costo',
+        className: 'text-right',
+        render: (m: Medication) => {
+          const v = ext[m.product_id]?.cost;
+          return h(
+            'span',
+            { className: 'font-mono text-cg-text-muted' },
+            v ? `$ ${Number(v).toLocaleString('es-AR')}` : '—'
+          );
         },
       },
       {
@@ -246,6 +278,24 @@ export function MedicamentosView() {
             'span',
             { className: 'font-mono font-semibold' },
             has ? `$ ${Number(e.price).toLocaleString('es-AR')}` : '—'
+          );
+        },
+      },
+      {
+        key: 'margen',
+        header: 'Margen',
+        className: 'text-right',
+        render: (m: Medication) => {
+          const e = ext[m.product_id];
+          const sale = Number(e?.price);
+          const cost = Number(e?.cost);
+          // Margen sobre venta. Necesita venta > 0 y un costo cargado (vacío/null/0 caen a "—").
+          if (!e?.cost || !(sale > 0)) return h('span', { className: 'text-cg-text-muted' }, '—');
+          const pct = ((sale - cost) / sale) * 100;
+          return h(
+            UI.Badge,
+            { variant: pct > 0 ? 'success-soft' : 'danger-soft', size: 'sm' } as any,
+            `${pct.toFixed(0)}%`
           );
         },
       },
