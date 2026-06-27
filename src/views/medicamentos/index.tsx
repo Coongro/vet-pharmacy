@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+import { SPECIES_LABELS as SPECIES_LABEL, SPECIES_ICON } from '@coongro/patients';
 import { getHostReact, getHostUI, actions } from '@coongro/plugin-sdk';
 import { useLaboratories } from '@coongro/vademecum';
 
@@ -7,7 +8,6 @@ import { ExpirationBadge } from '../../components/ExpirationBadge.js';
 import { MigrationBanner } from '../../components/MigrationBanner.js';
 import { useDetectTextMedications } from '../../hooks/useDetectTextMedications.js';
 import { useMedications } from '../../hooks/useMedications.js';
-import { SPECIES_LABEL, SPECIES_ICON } from '../../species.js';
 import type { Medication } from '../../types/domain.js';
 
 const React = getHostReact();
