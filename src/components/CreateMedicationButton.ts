@@ -16,7 +16,8 @@
  * @coongro/ui-components; el CSS propio del diseño vive en tailwind.css (.vp-meds).
  */
 import { getHostReact, getHostUI, actions, usePlugin, useSettings } from '@coongro/plugin-sdk';
-import { LaboratorySelect, useLaboratories } from '@coongro/vademecum';
+import { CatalogSearch, LaboratorySelect, useLaboratories } from '@coongro/vademecum';
+import type { CatalogProductDetail, CatalogProductSummary } from '@coongro/vademecum';
 
 import {
   SPECIES,
@@ -28,7 +29,7 @@ import type { Medication } from '../types/domain.js';
 
 const React = getHostReact();
 const UI = getHostUI();
-const { useState, useCallback, useEffect, useRef, useMemo } = React;
+const { useState, useCallback, useEffect, useMemo } = React;
 const h = React.createElement;
 
 // ─── Catálogos (del diseño) ──────────────────────────────────────────────────
@@ -53,39 +54,6 @@ const PRES_UNITS = ['ml', 'g', 'mg', 'comp.', 'cáps.', 'dosis', 'u.'];
 // Especies: taxonomía compartida (code/label/icon) en ../species.js. Se guarda
 // el CODE; las habilitadas se leen de los settings del tenant.
 const CLASSIFICATIONS = ['Fármaco', 'Biológico / Vacuna'];
-
-// ─── Tipos del modelo común (espejo liviano de @coongro/vademecum) ───────────
-
-interface CatalogSummary {
-  sourceId: string;
-  registrationNumber: string;
-  commercialName: string;
-  laboratory?: string;
-  /** País de la fuente (ISO, ej. "AR") — para materializar el lab con su país. */
-  country?: string;
-  /** Especies destino — el search las completa al clasificar por tipo. */
-  species?: string[];
-}
-interface CatalogComposition {
-  substance: string;
-  amount?: number;
-  unit?: string;
-  rawStrength?: string;
-}
-interface CatalogDetail extends CatalogSummary {
-  /** CUIT / tax id del laboratorio titular, si la fuente lo expone. */
-  laboratoryTaxId?: string;
-  composition: CatalogComposition[];
-  administrationRoutes: string[];
-  species: string[];
-  indications?: string;
-  presentation?: string;
-  presentationType?: string;
-  presentationSize?: string;
-  classification?: string;
-  status: 'active' | 'discontinued' | 'unknown';
-  statusLabel?: string;
-}
 
 // ─── Estado del form ─────────────────────────────────────────────────────────
 
@@ -249,29 +217,17 @@ export function CreateMedicationButton({
   // Confirmación de borrado (dialog de ui-components, no window.confirm).
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Buscador SENASA
-  const [senaQuery, setSenaQuery] = useState('');
-  const [senaResults, setSenaResults] = useState<CatalogSummary[]>([]);
-  const [senaLoading, setSenaLoading] = useState(false);
-  const [senaOpen, setSenaOpen] = useState(false);
-  const [senaSelected, setSenaSelected] = useState<CatalogDetail | null>(null);
+  // Producto elegido del vademécum: controla la tarjeta "seleccionado" del
+  // buscador compartido y los badges "Completado desde SENASA" del form. La
+  // mecánica de búsqueda (query, debounce, dropdown, gating) vive en
+  // <CatalogSearch> (@coongro/vademecum); acá solo se reacciona a la selección.
+  const [senaSelected, setSenaSelected] = useState<CatalogProductDetail | null>(null);
   const [senaCollapsed, setSenaCollapsed] = useState(false);
-  // null = desconocido; false = NINGÚN provider instalado lo registra (país sin
-  // vademécum); true = el provider existe (aunque la consulta puntual falle).
-  const [senaAvailable, setSenaAvailable] = useState<boolean | null>(null);
-  // Error recuperable de la consulta (sesión vencida, red, activación en curso),
-  // distinto de "no disponible en el país". null = sin error.
-  const [senaError, setSenaError] = useState<string | null>(null);
-  const senaRef = useRef<HTMLDivElement | null>(null);
-
-  const debouncedQuery = UI.useDebounce(senaQuery, 350);
 
   const reset = useCallback(() => {
     setForm(EMPTY_FORM);
     setName('');
     setNameDirty(false);
-    setSenaQuery('');
-    setSenaResults([]);
     setSenaSelected(null);
     setSenaCollapsed(false);
   }, []);
@@ -380,61 +336,6 @@ export function CreateMedicationButton({
     };
   }, [editMedication]);
 
-  // Búsqueda en el vademécum (sobre la caché del provider). NO colapsa el
-  // buscador si falla: solo marca no-disponible y lo muestra en el dropdown.
-  useEffect(() => {
-    if (senaSelected || senaCollapsed) return;
-    const q = debouncedQuery.trim();
-    if (!q) {
-      setSenaResults([]);
-      return;
-    }
-    let active = true;
-    setSenaLoading(true);
-    setSenaOpen(true);
-    void (async () => {
-      try {
-        const res = await actions.execute<CatalogSummary[]>('vademecum.catalog.search', {
-          query: q,
-          limit: 12,
-          // Farmacia solo carga medicamentos; las vacunas/biológicos van en
-          // Vacunación. El catálogo clasifica por composición y filtra.
-          kind: 'medication',
-        });
-        if (!active) return;
-        setSenaAvailable(true);
-        setSenaError(null);
-        setSenaResults(res ?? []);
-      } catch (err) {
-        if (active) {
-          // Solo el mensaje definitivo "ningún plugin instalado lo registra"
-          // significa país sin provider. Lo demás (sesión vencida, red, ventana
-          // de activación del loader) es recuperable → no mentir con "país".
-          const msg = err instanceof Error ? err.message : '';
-          const providerMissing = /not registered by any installed plugin/i.test(msg);
-          setSenaAvailable(!providerMissing);
-          setSenaError(
-            providerMissing ? null : 'No se pudo consultar el vademécum. Reintentá en un momento.'
-          );
-          setSenaResults([]);
-        }
-      } finally {
-        if (active) setSenaLoading(false);
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [debouncedQuery, senaSelected, senaCollapsed]);
-
-  useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      if (senaRef.current && !senaRef.current.contains(e.target as Node)) setSenaOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
-
   const update = useCallback(<K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm((prev: FormState) => ({ ...prev, [field]: value }));
   }, []);
@@ -473,18 +374,12 @@ export function CreateMedicationButton({
       requires_prescription: v ? true : prev.requires_prescription,
     }));
 
-  const pickSena = useCallback(
-    async (summary: CatalogSummary) => {
-      setSenaOpen(false);
-      setSenaLoading(true);
+  // Autofill: el buscador compartido ya resolvió la ficha completa; acá solo se
+  // mapea el modelo común al form de medicamento (principio activo + presentación
+  // + vía + especies…). El mapeo es propio de Farmacia; Vacunación mapea distinto.
+  const handleSelect = useCallback(
+    async (detail: CatalogProductDetail) => {
       try {
-        const detail = await actions.execute<CatalogDetail | null>('vademecum.catalog.getDetail', {
-          sourceId: summary.sourceId,
-        });
-        if (!detail) {
-          toast.warning('Sin detalle', 'No se pudo traer la ficha completa de SENASA');
-          return;
-        }
         const comps: CompRow[] =
           detail.composition.length > 0
             ? detail.composition.map((c) => ({
@@ -568,7 +463,6 @@ export function CreateMedicationButton({
         setName(detail.commercialName || '');
         setNameDirty(true);
         setSenaSelected(detail);
-        setSenaQuery('');
 
         // Auto-upsert del laboratorio en el maestro compartido (COONG-219): el
         // autofill trae el nombre de la firma; se materializa una sola vez en el
@@ -583,9 +477,7 @@ export function CreateMedicationButton({
           await refetchLabs();
         }
       } catch (err) {
-        toast.error('Error', err instanceof Error ? err.message : 'No se pudo traer el detalle');
-      } finally {
-        setSenaLoading(false);
+        toast.error('Error', err instanceof Error ? err.message : 'No se pudo aplicar el autofill');
       }
     },
     [toast, resolveLabId, refetchLabs]
@@ -802,176 +694,11 @@ export function CreateMedicationButton({
     );
   }
 
-  function renderSenaBar() {
-    if (senaSelected) {
-      return h(
-        'div',
-        { className: 'sena-selected' },
-        h('span', { className: 'sena-check' }, h(UI.DynamicIcon, { icon: 'Check', size: 15 })),
-        h(
-          'div',
-          { className: 'sena-sel-text' },
-          h('div', { className: 'sena-sel-name' }, senaSelected.commercialName),
-          h(
-            'div',
-            { className: 'sena-sel-meta' },
-            `${senaSelected.laboratory ?? '—'} · Reg. ${senaSelected.registrationNumber}`
-          )
-        ),
-        senaSelected.status === 'discontinued'
-          ? h(
-              UI.Badge,
-              { variant: 'warning-soft', style: { marginLeft: 'auto' } },
-              senaSelected.statusLabel ?? 'Dado de baja'
-            )
-          : h(
-              UI.Badge,
-              { variant: 'success-soft', style: { marginLeft: 'auto' } },
-              'Vigente en SENASA'
-            ),
-        h(
-          'button',
-          {
-            type: 'button',
-            className: 'sena-change',
-            onClick: () => {
-              setSenaSelected(null);
-              setSenaQuery('');
-            },
-          },
-          'Cambiar'
-        )
-      );
-    }
-    if (senaCollapsed) {
-      return h(
-        'div',
-        { className: 'sena-collapsed' },
-        h(
-          'span',
-          null,
-          h(UI.DynamicIcon, { icon: 'ShieldCheck', size: 14 }),
-          'Carga manual — sin vademécum.'
-        ),
-        h(
-          'button',
-          { type: 'button', className: 'sena-change', onClick: () => setSenaCollapsed(false) },
-          'Buscar en SENASA'
-        )
-      );
-    }
-    return h(
-      'div',
-      { className: 'sena-search-wrap', ref: senaRef },
-      h(
-        'div',
-        { className: 'sena-head' },
-        h('span', { className: 'sena-ico' }, h(UI.DynamicIcon, { icon: 'ShieldCheck', size: 16 })),
-        h(
-          'div',
-          null,
-          h('div', { className: 'sena-title' }, 'Buscar en el vademécum de SENASA'),
-          h(
-            'div',
-            { className: 'sena-sub' },
-            'Buscá por nombre comercial o principio activo y completamos casi toda la ficha clínica.'
-          )
-        )
-      ),
-      h(
-        'div',
-        { className: 'sena-input-wrap' },
-        h('span', { className: 'search-ico' }, h(UI.DynamicIcon, { icon: 'Search', size: 15 })),
-        h(UI.Input, {
-          value: senaQuery,
-          placeholder: 'Buscar por nombre comercial o principio activo...',
-          style: { paddingLeft: 36 },
-          onChange: (e: { target: { value: string } }) => setSenaQuery(e.target.value),
-          onFocus: () => {
-            if (senaQuery.trim()) setSenaOpen(true);
-          },
-        })
-      ),
-      senaOpen && senaQuery.trim()
-        ? h(
-            'div',
-            { className: 'sena-menu' },
-            senaLoading
-              ? h(
-                  'div',
-                  { className: 'sena-loading' },
-                  h('span', { className: 'spinner' }),
-                  'Buscando en el vademécum…'
-                )
-              : senaAvailable === false
-                ? h(
-                    'div',
-                    { className: 'sena-empty' },
-                    h(
-                      'div',
-                      { className: 'sena-empty-t' },
-                      'El vademécum no está disponible en este país'
-                    ),
-                    h(
-                      'span',
-                      { className: 'field-hint' },
-                      'Cargá el medicamento manualmente abajo.'
-                    )
-                  )
-                : senaError
-                  ? h(
-                      'div',
-                      { className: 'sena-empty' },
-                      h('div', { className: 'sena-empty-t' }, senaError),
-                      h(
-                        'span',
-                        { className: 'field-hint' },
-                        'O cargá el medicamento manualmente abajo.'
-                      )
-                    )
-                  : senaResults.length > 0
-                    ? senaResults.map((p) =>
-                        h(
-                          'button',
-                          {
-                            key: p.sourceId,
-                            type: 'button',
-                            className: 'sena-opt',
-                            onClick: () => void pickSena(p),
-                          },
-                          h(
-                            'span',
-                            { className: 'sena-opt-ico' },
-                            h(UI.DynamicIcon, { icon: 'Pill', size: 14 })
-                          ),
-                          h(
-                            'span',
-                            { className: 'sena-opt-main' },
-                            h('span', { className: 'sena-opt-name' }, p.commercialName),
-                            h(
-                              'span',
-                              { className: 'sena-opt-meta' },
-                              (p.laboratory ?? '—') +
-                                (p.species?.length ? ` · ${compactSpecies(p.species)}` : '')
-                            )
-                          ),
-                          h('span', { className: 'sena-opt-reg' }, `Reg. ${p.registrationNumber}`)
-                        )
-                      )
-                    : h(
-                        'div',
-                        { className: 'sena-empty' },
-                        h('div', { className: 'sena-empty-t' }, 'No se encontró en SENASA')
-                      )
-          )
-        : null,
-      h(
-        'button',
-        { type: 'button', className: 'sena-manual-link', onClick: () => setSenaCollapsed(true) },
-        '¿No lo encontrás? Cargalo manualmente'
-      )
-    );
-  }
+  // Meta de cada opción del dropdown: laboratorio + especies (formateadas a los
+  // labels de Pacientes). Es propio de Farmacia, por eso se inyecta al buscador
+  // compartido vía `renderItemMeta` en vez de vivir adentro del componente.
+  const senaItemMeta = (p: CatalogProductSummary): string =>
+    (p.laboratory ?? '—') + (p.species?.length ? ` · ${compactSpecies(p.species)}` : '');
 
   function compRow(c: CompRow, i: number) {
     return h(
@@ -1077,7 +804,26 @@ export function CreateMedicationButton({
         { className: 'vp-meds', style: { display: 'flex', flexDirection: 'column', gap: 22 } },
 
         // 0 · Buscador SENASA (solo en alta; en edición no aplica)
-        isEdit ? null : h('div', { className: 'sena-bar' }, renderSenaBar()),
+        isEdit
+          ? null
+          : h(
+              'div',
+              { className: 'sena-bar' },
+              h(CatalogSearch, {
+                kind: 'medication',
+                selected: senaSelected,
+                onSelect: (detail: CatalogProductDetail) => void handleSelect(detail),
+                onClear: () => setSenaSelected(null),
+                collapsed: senaCollapsed,
+                onCollapsedChange: setSenaCollapsed,
+                title: 'Buscar en el vademécum de SENASA',
+                subtitle:
+                  'Buscá por nombre comercial o principio activo y completamos casi toda la ficha clínica.',
+                placeholder: 'Buscar por nombre comercial o principio activo...',
+                itemIcon: 'Pill',
+                renderItemMeta: senaItemMeta,
+              })
+            ),
 
         // 1 · Identificación clínica
         h(
