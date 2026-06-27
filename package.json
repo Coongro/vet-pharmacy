@@ -43,7 +43,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@coongro/patients": ">=1.4.0",
+    "@coongro/patients": ">=1.5.0",
     "@coongro/products": "*",
     "@coongro/consultations": "*",
     "@coongro/vademecum": ">=0.2.0"
