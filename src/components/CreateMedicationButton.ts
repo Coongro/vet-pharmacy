@@ -21,10 +21,11 @@ import type { CatalogProductDetail, CatalogProductSummary } from '@coongro/vadem
 
 import {
   SPECIES,
-  SPECIES_LABEL,
+  SPECIES_LABELS as SPECIES_LABEL,
   SPECIES_ENABLED_DEFAULT,
-  senasaSpeciesToCode,
-} from '../species.js';
+  speciesCodeFromText as senasaSpeciesToCode,
+} from '@coongro/patients';
+
 import type { Medication } from '../types/domain.js';
 
 const React = getHostReact();
@@ -51,8 +52,8 @@ const PRES_TYPES = [
   'Collar',
 ];
 const PRES_UNITS = ['ml', 'g', 'mg', 'comp.', 'cáps.', 'dosis', 'u.'];
-// Especies: taxonomía compartida (code/label/icon) en ../species.js. Se guarda
-// el CODE; las habilitadas se leen de los settings del tenant.
+// Especies: taxonomía compartida (code/label/icon) en @coongro/patients. Se
+// guarda el CODE; las habilitadas se leen de los settings del tenant.
 const CLASSIFICATIONS = ['Fármaco', 'Biológico / Vacuna'];
 
 // ─── Estado del form ─────────────────────────────────────────────────────────

@@ -31,6 +31,9 @@
       "@coongro/plugin-sdk/*": [
         "../../packages/plugin-sdk/dist/*"
       ],
+      "@coongro/patients": [
+        "../patients/dist/index.d.ts"
+      ],
       "@coongro/products": [
         "../products/dist/index.d.ts"
       ],
