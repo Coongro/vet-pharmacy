@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 import { eq, ilike, or, and, gte, lte, desc, count } from 'drizzle-orm';
@@ -24,7 +23,7 @@ export class PrescriptionRepository {
   }
 
   async create({ data }: { data: NewPrescriptionRow }): Promise<PrescriptionRow[]> {
-    const row = { ...data, id: data.id ?? randomUUID() };
+    const row = { ...data, id: data.id ?? crypto.randomUUID() };
     return this.db.ormQuery((tx) => tx.insert(prescriptionTable).values(row).returning());
   }
 

@@ -136,7 +136,7 @@ export function AutocompleteInput<T>(props: AutocompleteInputProps<T>) {
   );
 
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!isOpen || results.length === 0) return;
       if (e.key === 'ArrowDown') {
         e.preventDefault();

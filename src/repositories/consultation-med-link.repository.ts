@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 import { eq, inArray } from 'drizzle-orm';
@@ -17,7 +16,7 @@ export class ConsultationMedLinkRepository {
   }
 
   async create({ data }: { data: NewConsultationMedLinkRow }): Promise<ConsultationMedLinkRow[]> {
-    const row = { ...data, id: data.id ?? randomUUID() };
+    const row = { ...data, id: data.id ?? crypto.randomUUID() };
     return this.db.ormQuery((tx) => tx.insert(consultationMedLinkTable).values(row).returning());
   }
 
@@ -27,7 +26,7 @@ export class ConsultationMedLinkRepository {
     items: NewConsultationMedLinkRow[];
   }): Promise<ConsultationMedLinkRow[]> {
     if (items.length === 0) return [];
-    const rows = items.map((item) => ({ ...item, id: item.id ?? randomUUID() }));
+    const rows = items.map((item) => ({ ...item, id: item.id ?? crypto.randomUUID() }));
     return this.db.ormQuery((tx) => tx.insert(consultationMedLinkTable).values(rows).returning());
   }
 
