@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 
 import type { ModuleDatabaseAPI } from '@coongro/plugin-sdk';
 import { eq } from 'drizzle-orm';
@@ -30,7 +29,7 @@ export class MedicationComponentRepository {
   async create({ data }: { data: NewMedicationComponentRow }): Promise<MedicationComponentRow[]> {
     // El id (uuid PK notNull) se genera acá si no viene: el insert no tiene
     // default en la columna, así que sin esto viola la not-null constraint.
-    const row = { ...data, id: data.id ?? randomUUID() };
+    const row = { ...data, id: data.id ?? crypto.randomUUID() };
     return this.db.ormQuery((tx) => tx.insert(medicationComponentTable).values(row).returning());
   }
 
