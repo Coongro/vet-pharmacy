@@ -17,7 +17,7 @@ import type { DispenseResult, PrescriptionStatus } from '../types/domain.js';
 /** Resultado del motor de lotes de products (products.batches.consume). */
 interface ConsumeResult {
   consumed: number;
-  batches: unknown[];
+  batches: Array<{ expired?: boolean }>;
   shortfall: number;
 }
 
@@ -29,9 +29,15 @@ export function createDispensePrescription(
   const itemRepo = new PrescriptionItemRepository(db);
 
   return async (args: unknown): Promise<DispenseResult> => {
-    const { prescriptionId, autoDeductStock = true } = args as {
+    const {
+      prescriptionId,
+      autoDeductStock = true,
+      allowExpired = false,
+    } = args as {
       prescriptionId: string;
       autoDeductStock?: boolean;
+      /** Política de vencidos (FIFO): false (block) saltea vencidos; true (warn) los usa. */
+      allowExpired?: boolean;
     };
 
     const rx = await prescriptionRepo.getById({ id: prescriptionId });
@@ -51,6 +57,7 @@ export function createDispensePrescription(
     let dispensedItems = 0;
     let fullyDispensedItems = 0;
     let totalItems = 0;
+    let usedExpiredLot = false;
 
     if (autoDeductStock) {
       for (const item of items) {
@@ -69,11 +76,13 @@ export function createDispensePrescription(
         const result = await actions.execute<ConsumeResult>('products.batches.consume', {
           productId: item.product_id,
           quantity: needed,
+          allowExpired,
           referenceType: 'prescription',
           referenceId: prescriptionId,
         });
         const consumed = result?.consumed ?? 0;
         totalBatchesModified += result?.batches?.length ?? 0;
+        if (result?.batches?.some((b) => b.expired)) usedExpiredLot = true;
 
         const newDispensed = parseFloat(item.dispensed_quantity) + consumed;
         await itemRepo.update({
@@ -103,6 +112,6 @@ export function createDispensePrescription(
       `Prescription ${prescriptionId} → ${newStatus}: ${dispensedItems} items processed, ${fullyDispensedItems}/${totalItems} fully dispensed, ${totalBatchesModified} batches modified`
     );
 
-    return { success: true, dispensedItems, modifiedBatches: totalBatchesModified };
+    return { success: true, dispensedItems, modifiedBatches: totalBatchesModified, usedExpiredLot };
   };
 }

@@ -22,8 +22,9 @@ function getDaysUntilExpiry(expirationDate: string): number {
   return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 }
 
-// `alertDays` = umbral configurable (setting vet-pharmacy.expiration.alertDays) para el aviso
-// "por vencer". Menos de 7 días siempre es urgente (danger); entre 7 y alertDays, aviso.
+// `alertDays` = umbral configurable (setting genérica de stock `products.stock.alertDays`)
+// para el aviso "por vencer". Menos de 7 días siempre es urgente (danger); entre 7 y
+// alertDays, aviso.
 function getBadgeVariant(days: number, alertDays: number): string {
   if (days <= 0) return 'destructive';
   if (days < 7) return 'danger-soft';
@@ -44,7 +45,7 @@ export function ExpirationBadge({ expirationDate }: ExpirationBadgeProps) {
     let active = true;
     void (async () => {
       try {
-        const v = await settings.get<number>('vet-pharmacy.expiration.alertDays');
+        const v = await settings.get<number>('products.stock.alertDays');
         if (active && v !== null && v !== undefined) setAlertDays(v);
       } catch {
         /* setting no disponible: queda el default de 30 */

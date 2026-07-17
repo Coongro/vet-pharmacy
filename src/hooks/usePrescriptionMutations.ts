@@ -80,15 +80,19 @@ export function usePrescriptionMutations() {
     async (prescriptionId: string): Promise<boolean> => {
       setDispensing(true);
       try {
-        const autoDeduct = (await settings.get<boolean>('vet-pharmacy.stock.autoDeduct')) ?? true;
+        const autoDeduct = (await settings.get<boolean>('products.stock.autoDeduct')) ?? true;
+        const expiredPolicy = (await settings.get<string>('products.stock.expiredLots')) ?? 'block';
 
-        const result = await actions.execute<{ success: boolean }>(
+        const result = await actions.execute<{ success: boolean; usedExpiredLot?: boolean }>(
           'vet-pharmacy.dispensePrescription',
-          { prescriptionId, autoDeductStock: autoDeduct }
+          { prescriptionId, autoDeductStock: autoDeduct, allowExpired: expiredPolicy === 'warn' }
         );
 
         if (result?.success) {
           toast.success('Dispensado', 'Receta procesada exitosamente');
+          if (result.usedExpiredLot) {
+            toast.warning('Lote vencido', 'La dispensación descontó de un lote vencido.');
+          }
           // Cobro: empuja las líneas de la receta dispensada a billing (fire-and-forget,
           // dependencia blanda). Sin esto, vender un medicamento no llegaba a la caja.
           void chargeDispensedPrescription(prescriptionId);

@@ -227,21 +227,35 @@ export function ConsultationMedicationSection(props: Record<string, unknown>) {
           // unificado (products): mismo consume que usan vacunas y recetas, con
           // trazabilidad (lote → esta consulta). Best-effort: si falla, el cobro
           // ya quedó registrado.
+          let usedExpiredLot = false;
           for (const m of meds) {
             const batchId = loteByMedIdRef.current[m.id];
             if (!batchId) continue;
             const dispensed = Number(qtyByIdRef.current[m.id] || '1') || 1;
             try {
-              await actions.execute('products.batches.consume', {
-                productId: m.product_id,
-                quantity: dispensed,
-                batchId,
-                referenceType: 'consultation_medication',
-                referenceId: consultationId ?? undefined,
-              });
+              // Selección MANUAL del lote: se permite descontar aunque esté vencido (el vet lo
+              // eligió), pero se avisa al final si alguno estaba vencido.
+              const result = await actions.execute<{ batches?: Array<{ expired?: boolean }> }>(
+                'products.batches.consume',
+                {
+                  productId: m.product_id,
+                  quantity: dispensed,
+                  batchId,
+                  allowExpired: true,
+                  referenceType: 'consultation_medication',
+                  referenceId: consultationId ?? undefined,
+                }
+              );
+              usedExpiredLot = Boolean(result?.batches?.some((b) => b.expired)) || usedExpiredLot;
             } catch {
               /* el descuento de stock es best-effort; el cobro ya quedó registrado */
             }
+          }
+          if (usedExpiredLot) {
+            toast.warning(
+              'Lote vencido',
+              'Se descontó de un lote vencido. Verificá el vencimiento.'
+            );
           }
           setSelected([]);
         })();
