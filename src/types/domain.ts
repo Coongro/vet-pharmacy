@@ -218,4 +218,6 @@ export interface DispenseResult {
   success: boolean;
   dispensedItems: number;
   modifiedBatches: number;
+  /** True si la dispensación (FIFO) descontó de algún lote vencido (política "avisar"). */
+  usedExpiredLot: boolean;
 }
