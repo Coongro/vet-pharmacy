@@ -80,7 +80,7 @@ export function usePrescriptionMutations() {
     async (prescriptionId: string): Promise<boolean> => {
       setDispensing(true);
       try {
-        const autoDeduct = (await settings.get<boolean>('vet-pharmacy.stock.autoDeduct')) ?? true;
+        const autoDeduct = (await settings.get<boolean>('products.stock.autoDeduct')) ?? true;
 
         const result = await actions.execute<{ success: boolean }>(
           'vet-pharmacy.dispensePrescription',

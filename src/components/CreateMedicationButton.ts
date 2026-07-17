@@ -15,16 +15,15 @@
  * lista en `medication_components`. Reutiliza componentes de
  * @coongro/ui-components; el CSS propio del diseño vive en tailwind.css (.vp-meds).
  */
-import { getHostReact, getHostUI, actions, usePlugin, useSettings } from '@coongro/plugin-sdk';
-import { CatalogSearch, LaboratorySelect, useLaboratories } from '@coongro/vademecum';
-import type { CatalogProductDetail, CatalogProductSummary } from '@coongro/vademecum';
-
 import {
   SPECIES,
   SPECIES_LABELS as SPECIES_LABEL,
   SPECIES_ENABLED_DEFAULT,
   speciesCodeFromText as senasaSpeciesToCode,
 } from '@coongro/patients';
+import { getHostReact, getHostUI, actions, usePlugin, useSettings } from '@coongro/plugin-sdk';
+import { CatalogSearch, LaboratorySelect, useLaboratories } from '@coongro/vademecum';
+import type { CatalogProductDetail, CatalogProductSummary } from '@coongro/vademecum';
 
 import type { Medication } from '../types/domain.js';
 

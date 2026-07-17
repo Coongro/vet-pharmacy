@@ -106,17 +106,13 @@
     ],
     "settings": {
       "groups": [
-        {
-          "id": "vet-pharmacy",
-          "label": "Farmacia Veterinaria",
-          "order": 50
-        }
+        { "id": "vet-pharmacy", "label": "Farmacia Veterinaria", "order": 50 }
       ],
       "pages": [
         {
           "id": "vet-pharmacy.general",
           "group": "vet-pharmacy",
-          "label": "Recetas y stock",
+          "label": "Recetas",
           "icon": "assets/icons/pharmacy.svg",
           "order": 10
         }
@@ -143,24 +139,6 @@
               ]
             },
             {
-              "key": "vet-pharmacy.expiration.alertDays",
-              "type": "number",
-              "label": "Días de anticipación para alertas",
-              "description": "Cantidad de días antes del vencimiento para mostrar alertas",
-              "default": 30,
-              "min": 1,
-              "max": 365,
-              "tags": [
-                "vet-pharmacy",
-                "expiration",
-                "alertdays",
-                "días",
-                "anticipación",
-                "para",
-                "alertas"
-              ]
-            },
-            {
               "key": "vet-pharmacy.prescription.validityDays",
               "type": "number",
               "label": "Validez de receta controlada (días)",
@@ -171,39 +149,9 @@
               "tags": [
                 "vet-pharmacy",
                 "prescription",
-                "validitydays",
                 "validez",
                 "receta",
-                "controlada",
-                "(días)"
-              ]
-            },
-            {
-              "key": "vet-pharmacy.prescription.autoNumber",
-              "type": "boolean",
-              "label": "Numeración automática",
-              "description": "Numerar recetas automáticamente con número correlativo",
-              "default": true,
-              "tags": [
-                "vet-pharmacy",
-                "prescription",
-                "autonumber",
-                "numeración",
-                "automática"
-              ]
-            },
-            {
-              "key": "vet-pharmacy.stock.autoDeduct",
-              "type": "boolean",
-              "label": "Descontar stock al dispensar",
-              "description": "Descontar automáticamente del lote más próximo a vencer (FIFO) al dispensar una receta",
-              "default": true,
-              "tags": [
-                "vet-pharmacy",
-                "stock",
-                "autodeduct",
-                "descontar",
-                "dispensar"
+                "controlada"
               ]
             }
           ]
