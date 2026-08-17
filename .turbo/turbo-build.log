@@ -1,10 +1,10 @@
 
-> @coongro/vet-pharmacy@1.0.0 build A:\Coongro2\Coongro\plugins\vet-pharmacy
+> @coongro/vet-pharmacy@1.1.0 build A:\Coongro2\Coongro\plugins\vet-pharmacy
 > npm run build:css && npm run copy:fontawesome && tsc
 
 npm warn config ignoring workspace config at A:\Coongro2\Coongro\plugins\vet-pharmacy/.npmrc
 
-> @coongro/vet-pharmacy@1.0.0 build:css
+> @coongro/vet-pharmacy@1.1.0 build:css
 > tailwindcss -c tailwind.config.cjs -i ./src/styles/tailwind.css -o ./dist/assets/tailwind.css --minify
 
 Browserslist: caniuse-lite is outdated. Please run:
@@ -13,9 +13,9 @@ Browserslist: caniuse-lite is outdated. Please run:
 
 Rebuilding...
 
-Done in 749ms.
+Done in 837ms.
 npm warn config ignoring workspace config at A:\Coongro2\Coongro\plugins\vet-pharmacy/.npmrc
 
-> @coongro/vet-pharmacy@1.0.0 copy:fontawesome
+> @coongro/vet-pharmacy@1.1.0 copy:fontawesome
 > node scripts/copy-fontawesome.cjs
 
