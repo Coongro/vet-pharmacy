@@ -47,27 +47,67 @@
       {
         "module": "./dist/repositories/medication.repository.js",
         "export": "MedicationRepository",
-        "prefix": "vet-pharmacy.medications"
+        "prefix": "vet-pharmacy.medications",
+        "actions": [
+          "list",
+          "getById",
+          "create",
+          "update",
+          "delete",
+          "getByProductId",
+          "search"
+        ]
       },
       {
         "module": "./dist/repositories/prescription.repository.js",
         "export": "PrescriptionRepository",
-        "prefix": "vet-pharmacy.prescriptions"
+        "prefix": "vet-pharmacy.prescriptions",
+        "actions": [
+          "list",
+          "getById",
+          "create",
+          "update",
+          "delete",
+          "getActive",
+          "search"
+        ]
       },
       {
         "module": "./dist/repositories/prescription-item.repository.js",
         "export": "PrescriptionItemRepository",
-        "prefix": "vet-pharmacy.prescription-items"
+        "prefix": "vet-pharmacy.prescription-items",
+        "actions": [
+          "list",
+          "getById",
+          "create",
+          "update",
+          "delete",
+          "listByPrescription"
+        ]
       },
       {
         "module": "./dist/repositories/consultation-med-link.repository.js",
         "export": "ConsultationMedLinkRepository",
-        "prefix": "vet-pharmacy.consultation-med-links"
+        "prefix": "vet-pharmacy.consultation-med-links",
+        "actions": [
+          "list",
+          "create",
+          "createBatch",
+          "listByConsultationMedIds",
+          "delete"
+        ]
       },
       {
         "module": "./dist/repositories/medication-component.repository.js",
         "export": "MedicationComponentRepository",
-        "prefix": "vet-pharmacy.medication-components"
+        "prefix": "vet-pharmacy.medication-components",
+        "actions": [
+          "list",
+          "getById",
+          "create",
+          "update",
+          "delete"
+        ]
       }
     ],
     "viewContributions": [
